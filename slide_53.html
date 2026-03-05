@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Subscription Structure &amp; Enforcement</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --accent-red: #EF4444;
+        }
+
+        /* SVG Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-element {
+            position: absolute;
+            border: 2px solid rgba(242, 140, 40, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(242, 140, 40, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3B82F6;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .list-item:nth-child(even) .icon-box {
+            background: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        /* Specific Styles for Enforcement Status */
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .badge-strict {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+
+        .badge-soft {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+
+        .badge-smart {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-element" style="width: 600px; height: 600px; top: -200px; right: -200px;"></div>
+        <div class="decorative-element"
+            style="width: 400px; height: 400px; bottom: -100px; left: -100px; border-color: rgba(59, 130, 246, 0.1);">
+        </div>
+        <!-- Main Content -->
+        <div class="flex flex-col w-full h-full p-12 relative z-10">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Subscription Engine</p>
+                </div>
+                <h1 class="text-4xl font-black text-white leading-tight">
+                    هيكل الباقات ومنطق <span class="text-blue-400">Enforcement</span>
+                </h1>
+                <p class="text-lg text-gray-400 mt-2 max-w-4xl">
+                    نظام إدارة اشتراكات ذكي يوازن بين إتاحة الخدمة (Freemium) والسيطرة على التكاليف التشغيلية.
+                </p>
+            </div>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-2 gap-8 flex-1">
+                <!-- Left Column: Subscription Structure -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-blue-400"></i>
+                        هيكلية الباقات المتدرجة (Tiered Structure)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">استراتيجية الدخول المجاني (Freemium)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                تبدأ جميع المطاعم بباقة مجانية (Starter) لإزالة حواجز الدخول، ولكن مع قيود صارمة على عدد
+                                الطلبات اليومية لضمان عدم استنزاف موارد الدعم والتوصيل دون عائد.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">التحكم في الخصائص (Feature Gating)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                ربط الميزات المتقدمة بنوع الباقة: الحملات التسويقية (Promo)، تحليلات الأداء المتقدمة،
+                                وإدارة الفروع المتعددة متاحة فقط للباقات المدفوعة (Pro &amp; Enterprise).
+                            </p>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">أولوية الظهور (Visibility Boost)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                خوارزمية الترتيب في التطبيق تأخذ نوع الباقة كعامل مرجح؛ الباقات الأعلى تحصل على ظهور
+                                أفضل في نتائج البحث والقوائم المميزة.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column: Enforcement Logic -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-gavel text-orange-400"></i>
+                        منطق الفرض والتحكم (Enforcement Logic)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">الإيقاف الآلي (Hard Stop)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                عند وصول الباقة المجانية للحد الأقصى (مثلاً 10 طلبات/يوم)، يتم تحويل حالة المطعم
+                                تلقائياً إلى "Busy" ولا يستقبل طلبات جديدة حتى اليوم التالي.
+                            </p>
+                            <span class="status-badge badge-strict">Free Tier Logic</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">خنق الظهور (Visibility Throttling)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                للباقات المتوسطة، عند الاقتراب من الحد، يقلل النظام تدريجيًا من ظهور المطعم لتقليل تدفق
+                                الطلبات بدلاً من الإيقاف المفاجئ، مع إرسال تنبيه للترقية.
+                            </p>
+                            <span class="status-badge badge-soft">Basic/Pro Tier Logic</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">قائمة الانتظار الذكية (Smart Queue)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                للباقات العليا (Enterprise)، لا يتم رفض الطلبات الفائضة بل توضع في جدولة مسبقة أو يتم
+                                تفعيل رسوم "Overdraft" لكل طلب إضافي حسب الاتفاق.
+                            </p>
+                            <span class="status-badge badge-smart">Enterprise Logic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="flex justify-between items-center pt-6 mt-2 border-t border-gray-700 text-xs text-gray-500">
+                <p>Subscription Engine Logic</p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-gray-800 rounded">Automated Jobs</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">Realtime Limit Check</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

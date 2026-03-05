@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Restaurant App - Advanced Features</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Decorative Elements */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background-color: #3B82F6;
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background-color: #F28C28;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            padding: 20px 60px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        /* Grid Layout */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 24px;
+            height: 100%;
+        }
+
+        /* Feature Card */
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Icon */
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Typography */
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Accent Colors & Variations */
+        /* Card 1: Boost - Orange (Visibility) */
+        .card-boost .icon-box {
+            color: #F28C28;
+            background-color: rgba(242, 140, 40, 0.15);
+            border: 1px solid rgba(242, 140, 40, 0.3);
+        }
+
+        .card-boost:hover {
+            border-top: 4px solid #F28C28;
+        }
+
+        /* Card 2: Multi-Branch - Purple (Structure) */
+        .card-branch .icon-box {
+            color: #A78BFA;
+            background-color: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .card-branch:hover {
+            border-top: 4px solid #8B5CF6;
+        }
+
+        /* Card 3: Reports - Blue (Data) */
+        .card-reports .icon-box {
+            color: #60A5FA;
+            background-color: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .card-reports:hover {
+            border-top: 4px solid #3B82F6;
+        }
+
+        /* Card 4: Marketing - Red (Action) */
+        .card-market .icon-box {
+            color: #F87171;
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .card-market:hover {
+            border-top: 4px solid #EF4444;
+        }
+
+        /* Card 5: Staff - Teal (People) */
+        .card-staff .icon-box {
+            color: #5EEAD4;
+            background-color: rgba(20, 184, 166, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+
+        .card-staff:hover {
+            border-top: 4px solid #14B8A6;
+        }
+
+        /* Card 6: Ratings - Yellow (Quality) */
+        .card-rate .icon-box {
+            color: #FCD34D;
+            background-color: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .card-rate:hover {
+            border-top: 4px solid #F59E0B;
+        }
+
+        /* Number Badge */
+        .card-number {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 3rem;
+            font-weight: 900;
+            opacity: 0.05;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Backgrounds -->
+        <div class="bg-pattern"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Restaurant App</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    الميزات المتقدمة <span class="text-gray-400">(Advanced Features)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">أدوات احترافية للنمو، إدارة التوسع، وتحسين الربحية</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <div class="feature-grid">
+                <!-- Feature 1: Boost System -->
+                <div class="feature-card card-boost">
+                    <span class="card-number">01</span>
+                    <div class="icon-box">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <p class="card-title">نظام الـ Boost والترويج</p>
+                    <p class="card-desc">
+                        زيادة ظهور المطعم في نتائج البحث والقوائم الرئيسية مقابل رسوم إضافية، مما يضاعف عدد المشاهدات
+                        والطلبات المحتملة.
+                    </p>
+                </div>
+                <!-- Feature 2: Multi-Branch Management -->
+                <div class="feature-card card-branch">
+                    <span class="card-number">02</span>
+                    <div class="icon-box">
+                        <i class="fas fa-store-alt"></i>
+                    </div>
+                    <p class="card-title">إدارة الفروع المتعددة</p>
+                    <p class="card-desc">
+                        لوحة تحكم مركزية (Centralized Dashboard) لإدارة المنيو، الأسعار، والمخزون لجميع الفروع في مدن
+                        مختلفة من شاشة واحدة.
+                    </p>
+                </div>
+                <!-- Feature 3: Advanced Reports -->
+                <div class="feature-card card-reports">
+                    <span class="card-number">03</span>
+                    <div class="icon-box">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <p class="card-title">تقارير وتحليلات متقدمة</p>
+                    <p class="card-desc">
+                        رؤى تفصيلية حول الأداء المالي، ساعات الذروة، الأصناف الأكثر مبيعاً، ومعدلات الاحتفاظ بالعملاء
+                        لكل فرع على حدة.
+                    </p>
+                </div>
+                <!-- Feature 4: In-App Marketing -->
+                <div class="feature-card card-market">
+                    <span class="card-number">04</span>
+                    <div class="icon-box">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <p class="card-title">أدوات التسويق والعروض</p>
+                    <p class="card-desc">
+                        إنشاء حملات ترويجية مخصصة، كوبونات خصم، وعروض "اشترِ 1 واحصل على 1" مباشرة من التطبيق لجذب شرائح
+                        عملاء جديدة.
+                    </p>
+                </div>
+                <!-- Feature 5: Staff Management -->
+                <div class="feature-card card-staff">
+                    <span class="card-number">05</span>
+                    <div class="icon-box">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <p class="card-title">إدارة الصلاحيات والموظفين</p>
+                    <p class="card-desc">
+                        نظام أدوار (RBAC) يتيح تعيين صلاحيات محددة للموظفين (Manager, Cashier, Chef) لضمان أمان البيانات
+                        المالية والتشغيلية.
+                    </p>
+                </div>
+                <!-- Feature 6: Ratings & Reviews -->
+                <div class="feature-card card-rate">
+                    <span class="card-number">06</span>
+                    <div class="icon-box">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-title">إدارة التقييمات والسمعة</p>
+                    <p class="card-desc">
+                        مراقبة تقييمات العملاء والرد عليها، مع تحليل مشاعر العملاء (Sentiment Analysis) لتحسين جودة
+                        الطعام والخدمة.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center bg-[#09182d] z-10">
+            <p class="text-xs text-gray-500">Restaurant App Specifications</p>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <p>Enterprise Ready Features</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

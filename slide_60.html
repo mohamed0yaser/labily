@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Decision Trees for Compensation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Main Layout */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Flowchart Area */
+        .flowchart-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        /* Rules Area */
+        .rules-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Tree Nodes */
+        .node {
+            padding: 10px 16px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .node h4 {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .node p {
+            font-size: 0.7rem;
+            margin: 4px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .node-icon {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        /* Specific Node Styles - Using Solid Colors to avoid gradient issues */
+        .node-start {
+            background-color: #2563EB;
+            border: 2px solid #60A5FA;
+            width: 200px;
+        }
+
+        .node-decision {
+            background-color: #1E293B;
+            border: 2px dashed #94A3B8;
+            width: 160px;
+            padding: 8px;
+        }
+
+        .node-success {
+            background-color: #059669;
+            border: 1px solid #34D399;
+            width: 170px;
+        }
+
+        .node-warning {
+            background-color: #D97706;
+            border: 1px solid #FCD34D;
+            width: 170px;
+        }
+
+        .node-danger {
+            background-color: #DC2626;
+            border: 1px solid #FCA5A5;
+            width: 170px;
+        }
+
+        .node-info {
+            background-color: #4B5563;
+            border: 1px solid #9CA3AF;
+            width: 170px;
+        }
+
+        /* Connectors */
+        .connector-vertical {
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 25px;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .branch::before {
+            content: '';
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            width: 2px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Rules Cards */
+        .rule-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .rule-title {
+            font-weight: 700;
+            color: #E2E8F0;
+            font-size: 1rem;
+        }
+
+        .matrix-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .matrix-row:last-child {
+            border-bottom: none;
+        }
+
+        .matrix-label {
+            font-size: 0.8rem;
+            color: #CBD5E1;
+        }
+
+        .matrix-val {
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .text-green {
+            color: #34D399;
+        }
+
+        .text-red {
+            color: #F87171;
+        }
+
+        .text-yellow {
+            color: #FBBF24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-green-500"></span>
+                    <p class="text-green-400 font-bold uppercase tracking-widest text-sm">Financial Logic</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    منطق التعويض <span class="text-gray-400">والاسترداد (Refunds)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Automated Decision Making &amp; Customer Recovery</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left: Flowchart -->
+            <div class="flowchart-area">
+                <!-- Root -->
+                <div class="node node-start">
+                    <i class="fas fa-exclamation-triangle node-icon"></i>
+                    <h4>طلب إلغاء / فشل الطلب</h4>
+                    <p>تحديد المسؤولية تلقائياً</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Decision Point -->
+                <div class="node node-decision">
+                    <i class="fas fa-user-tag node-icon text-blue-400"></i>
+                    <h4>مصدر الإلغاء؟</h4>
+                    <p>المستخدم / المطعم / النظام</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Branches Wrapper -->
+                <div class="relative w-full" style="max-width: 900px;">
+                    <!-- Horizontal Bar -->
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-gray-600"></div>
+                    <div class="branch-container">
+                        <!-- Branch 1: User -->
+                        <div class="branch">
+                            <div class="node node-info mb-6">
+                                <i class="fas fa-user node-icon"></i>
+                                <h4>المستخدم</h4>
+                                <p>إلغاء طوعي</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node node-decision mb-4" style="width: 140px; padding: 5px;">
+                                <p class="font-bold text-xs">هل تم البدء؟</p>
+                            </div>
+                            <!-- Split for User -->
+                            <div class="flex gap-2">
+                                <div class="node"
+                                    style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; width: 100px;">
+                                    <p class="text-green-400 font-bold text-xs">لا</p>
+                                    <p class="text-xs text-white">100% استرداد</p>
+                                </div>
+                                <div class="node"
+                                    style="background: rgba(239, 68, 68, 0.2); border: 1px solid #EF4444; width: 100px;">
+                                    <p class="text-red-400 font-bold text-xs">نعم</p>
+                                    <p class="text-xs text-white">0% استرداد</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Branch 2: Restaurant -->
+                        <div class="branch">
+                            <div class="node node-warning mb-6">
+                                <i class="fas fa-store node-icon"></i>
+                                <h4>المطعم</h4>
+                                <p>رفض / نفاذ / عجز</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node node-success mb-2">
+                                <i class="fas fa-wallet node-icon"></i>
+                                <h4>استرداد كامل</h4>
+                                <p>للمحفظة فوراً</p>
+                            </div>
+                            <div class="connector-vertical" style="height: 10px;"></div>
+                            <div class="node" style="background: rgba(245, 158, 11, 0.1); border: 1px dashed #F59E0B;">
+                                <p class="text-orange-400 font-bold text-xs">+ قسيمة تعويض</p>
+                                <p class="text-xs text-gray-400">10% من قيمة الطلب</p>
+                            </div>
+                        </div>
+                        <!-- Branch 3: System/Driver -->
+                        <div class="branch">
+                            <div class="node node-danger mb-6">
+                                <i class="fas fa-motorcycle node-icon"></i>
+                                <h4>السائق / النظام</h4>
+                                <p>تأخير فادح / عدم توفر</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node node-success mb-2">
+                                <i class="fas fa-wallet node-icon"></i>
+                                <h4>استرداد كامل</h4>
+                                <p>تلقائي</p>
+                            </div>
+                            <div class="connector-vertical" style="height: 10px;"></div>
+                            <div class="node" style="background: rgba(16, 185, 129, 0.1); border: 1px dashed #10B981;">
+                                <p class="text-green-400 font-bold text-xs">+ نقاط ولاء</p>
+                                <p class="text-xs text-gray-400">للحفاظ على العميل</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Rules Panel -->
+            <div class="rules-area">
+                <!-- Wallet Rule -->
+                <div class="rule-card" style="border-top: 4px solid #10B981;">
+                    <div class="rule-header">
+                        <i class="fas fa-wallet text-green-400 text-xl"></i>
+                        <h3 class="rule-title">Wallet Refund First</h3>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        جميع عمليات الاسترداد تتم إلى <strong>المحفظة الرقمية</strong> داخل التطبيق بشكل فوري لضمان:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-gray-400 mt-2 space-y-1">
+                        <li>سرعة حل المشكلة (Instant Resolution).</li>
+                        <li>إبقاء السيولة داخل النظام (Retention).</li>
+                        <li>تقليل رسوم بوابات الدفع البنكية.</li>
+                    </ul>
+                </div>
+                <!-- Matrix -->
+                <div class="rule-card" style="border-top: 4px solid #3B82F6; flex: 1;">
+                    <div class="rule-header">
+                        <i class="fas fa-table text-blue-400 text-xl"></i>
+                        <h3 class="rule-title">مصفوفة التعويض (Compensation Matrix)</h3>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="matrix-row">
+                            <span class="matrix-label">إلغاء المستخدم (قبل التحضير)</span>
+                            <span class="matrix-val text-green">استرداد 100%</span>
+                        </div>
+                        <div class="matrix-row">
+                            <span class="matrix-label">إلغاء المستخدم (بعد التحضير)</span>
+                            <span class="matrix-val text-red">خصم 100%</span>
+                        </div>
+                        <div class="matrix-row">
+                            <span class="matrix-label">خطأ مطعم (أصناف ناقصة)</span>
+                            <span class="matrix-val text-yellow">قيمة الصنف + Voucher</span>
+                        </div>
+                        <div class="matrix-row">
+                            <span class="matrix-label">خطأ مطعم (إلغاء كامل)</span>
+                            <span class="matrix-val text-green">100% + 15% Voucher</span>
+                        </div>
+                        <div class="matrix-row">
+                            <span class="matrix-label">عدم توفر سائقين</span>
+                            <span class="matrix-val text-green">100% + 500 نقطة</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-700">
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            نظام كشف الاحتيال يراقب تكرار الإلغاء من نفس الحساب.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Customer Retention &amp; Financial Integrity</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-sync-alt text-blue-400"></i>
+                <p>Auto-Reconciliation Engine</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

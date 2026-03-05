@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Driver Exception Scenarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Main Layout */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Flowchart Area */
+        .flowchart-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        /* Rules Area */
+        .rules-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Tree Nodes */
+        .node {
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .node h4 {
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .node p {
+            font-size: 0.75rem;
+            margin: 4px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .node-icon {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        /* Specific Node Styles - No Gradients */
+        .node-start {
+            background-color: #2563EB;
+            /* Blue-600 */
+            border: 2px solid #60A5FA;
+            width: 220px;
+        }
+
+        .node-decision {
+            background-color: #1E293B;
+            /* Slate-800 */
+            border: 2px dashed #94A3B8;
+            width: 180px;
+            padding: 10px;
+        }
+
+        .node-action-blue {
+            background-color: #0EA5E9;
+            /* Sky-500 */
+            border: 1px solid #7DD3FC;
+            width: 180px;
+        }
+
+        .node-action-orange {
+            background-color: #D97706;
+            /* Amber-600 */
+            border: 1px solid #FCD34D;
+            width: 180px;
+        }
+
+        .node-action-red {
+            background-color: #DC2626;
+            /* Red-600 */
+            border: 1px solid #FCA5A5;
+            width: 180px;
+        }
+
+        /* Connectors */
+        .connector-vertical {
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 30px;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .branch::before {
+            content: '';
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            width: 2px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Rules Cards */
+        .rule-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .rule-title {
+            font-weight: 700;
+            color: #E2E8F0;
+            font-size: 1rem;
+        }
+
+        .status-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #CBD5E1;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .level-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .badge-info {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+            border: 1px solid #60A5FA;
+        }
+
+        .badge-warning {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #FBBF24;
+            border: 1px solid #FBBF24;
+        }
+
+        .badge-danger {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+            border: 1px solid #F87171;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Logistics Logic</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    سيناريوهات الاستثناءات <span class="text-gray-400">(السائقين)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Handling Edge Cases: Reject, Cancel, Delay</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left: Flowchart -->
+            <div class="flowchart-area">
+                <!-- Root -->
+                <div class="node node-start">
+                    <i class="fas fa-motorcycle node-icon"></i>
+                    <h4>إشعار طلب للسائق</h4>
+                    <p>ضمن دائرة التوزيع</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Decision Point -->
+                <div class="node node-decision">
+                    <i class="fas fa-code-branch node-icon text-orange-400"></i>
+                    <h4>استجابة السائق</h4>
+                    <p>الإجراء المتخذ</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Branches Wrapper with Horizontal Bar -->
+                <div class="relative w-full" style="max-width: 850px;">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-gray-600"></div>
+                    <div class="branch-container">
+                        <!-- Branch 1: Reject -->
+                        <div class="branch">
+                            <div class="node node-action-blue mb-6">
+                                <i class="fas fa-times node-icon"></i>
+                                <h4>رفض الطلب</h4>
+                                <p>Reject / Timeout</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node"
+                                style="background-color: rgba(14, 165, 233, 0.1); border: 1px dashed #38BDF8;">
+                                <p class="text-sky-400 font-bold">إعادة توزيع فوري</p>
+                                <p class="text-xs text-gray-400">البحث عن السائق التالي</p>
+                            </div>
+                        </div>
+                        <!-- Branch 2: Cancel -->
+                        <div class="branch">
+                            <div class="node node-action-red mb-6">
+                                <i class="fas fa-ban node-icon"></i>
+                                <h4>إلغاء بعد القبول</h4>
+                                <p>Cancellation</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node"
+                                style="background-color: rgba(239, 68, 68, 0.1); border: 1px dashed #F87171;">
+                                <p class="text-red-400 font-bold">بديل + غرامة</p>
+                                <p class="text-xs text-gray-400">تعيين سائق جديد فوراً</p>
+                            </div>
+                        </div>
+                        <!-- Branch 3: Delay -->
+                        <div class="branch">
+                            <div class="node node-action-orange mb-6">
+                                <i class="fas fa-history node-icon"></i>
+                                <h4>تأخير في الوصول</h4>
+                                <p>Delay &gt; SLA</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node"
+                                style="background-color: rgba(245, 158, 11, 0.1); border: 1px dashed #FBBF24;">
+                                <p class="text-orange-400 font-bold">تنبيه / إعادة توجيه</p>
+                                <p class="text-xs text-gray-400">حسب مدة التأخير</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Rules Panel -->
+            <div class="rules-area">
+                <!-- Redistribution Rule -->
+                <div class="rule-card" style="border-top: 4px solid #3B82F6;">
+                    <div class="rule-header">
+                        <i class="fas fa-sync-alt text-blue-400 text-xl"></i>
+                        <h3 class="rule-title">إعادة التوزيع (Auto-Redistribution)</h3>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        عند رفض السائق أو انتهاء مهلة 45 ثانية، يقوم النظام فوراً بإسناد الطلب للسائق التالي في قائمة
+                        الانتظار (Sequential List) دون التأثير المادي على السائق الأول (فقط نسبة القبول).
+                    </p>
+                </div>
+                <!-- Penalty & Termination Logic -->
+                <div class="rule-card" style="border-top: 4px solid #EF4444; flex: 1;">
+                    <div class="rule-header">
+                        <i class="fas fa-gavel text-red-400 text-xl"></i>
+                        <h3 class="rule-title">سياسة العقوبات (Termination)</h3>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <div class="status-level">
+                            <span class="level-badge badge-info">Low Risk</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">تأخير بسيط</p>
+                                <p class="text-xs text-gray-400">تنبيه آلي للسائق (Push Notification)</p>
+                            </div>
+                        </div>
+                        <div class="status-level">
+                            <span class="level-badge badge-warning">Medium</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">إلغاء بعد القبول</p>
+                                <p class="text-xs text-gray-400">غرامة مالية + خفض الأولوية 24 ساعة</p>
+                            </div>
+                        </div>
+                        <div class="status-level">
+                            <span class="level-badge badge-danger">Critical</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">تكرار المخالفات</p>
+                                <p class="text-xs text-gray-400">إيقاف الحساب (Suspension) ومراجعة يدوية</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-700">
+                        <p class="text-xs text-gray-500 flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-green-400"></i>
+                            ضمان استمرارية الخدمة عبر تعويض العميل
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Driver Operations &amp; Logistics Efficiency</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-server text-blue-400"></i>
+                <p>Automated Dispatch Engine</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

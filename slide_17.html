@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Subscription Logic</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+        }
+
+        /* SVG Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-element {
+            position: absolute;
+            border: 2px solid rgba(242, 140, 40, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(242, 140, 40, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3B82F6;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .list-item:nth-child(even) .icon-box {
+            background: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .tech-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            margin-top: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-element" style="width: 600px; height: 600px; top: -200px; right: -200px;"></div>
+        <div class="decorative-element"
+            style="width: 400px; height: 400px; bottom: -100px; left: -100px; border-color: rgba(59, 130, 246, 0.1);">
+        </div>
+        <!-- Main Content -->
+        <div class="flex flex-col w-full h-full p-12 relative z-10">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Subscription Engine Logic</p>
+                </div>
+                <h1 class="text-4xl font-black text-white leading-tight">
+                    منطق التحكم في الطلبات <span class="text-blue-400">حسب الباقة</span>
+                </h1>
+                <p class="text-lg text-gray-400 mt-2 max-w-4xl">
+                    آلية ذكية لضمان التوازن بين سعة المطعم ومستوى الخدمة (SLA) بناءً على نوع الاشتراك، لضمان استدامة
+                    الجودة.
+                </p>
+            </div>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-2 gap-8 flex-1">
+                <!-- Left Column -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-sliders-h text-blue-400"></i>
+                        آليات التحكم والحدود (Limits)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-hand-paper"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">الحد الأقصى اليومي (Daily Cap)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                لكل باقة سقف محدد للطلبات يومياً (مثلاً: 50 طلب للباقة الأساسية). يمنع هذا تراكم الطلبات
+                                غير المدارة ويحمي المطاعم الصغيرة من الانهيار التشغيلي.
+                            </p>
+                            <span class="tech-badge">Hard Limit Enforcement</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-toggle-off"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">إجراءات الوصول للحد (Auto-Action)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                عند بلوغ الحد، يتحول المطعم تلقائياً إلى وضع "مزدحم" (Busy) أو يتم إخفاؤه مؤقتاً من
+                                القوائم لضمان عدم استقبال طلبات تفوق القدرة الاستيعابية.
+                            </p>
+                            <span class="tech-badge">Auto-Busy Mode</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-sort-amount-down"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">قائمة الانتظار الذكية (Queueing)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                للباقات المتقدمة (Enterprise)، يمكن تفعيل قائمة انتظار للمستخدمين بدلاً من الرفض
+                                المباشر، مع عرض وقت متوقع أطول للتوصيل.
+                            </p>
+                            <span class="tech-badge">Smart Queue</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-eye text-orange-400"></i>
+                        الظهور والإنفورسمنت (Enforcement)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">أولوية الظهور الديناميكية</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                خوارزميات الترتيب تمنح وزناً أعلى (Ranking Weight) للمطاعم في الباقات العليا، بشرط
+                                الحفاظ على معايير الجودة (SLA) وسرعة القبول.
+                            </p>
+                            <span class="tech-badge">Visibility Algo</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">المحرك الآلي (Subscription Engine)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                نظام مركزي يعمل في الخلفية لمراقبة العدادات وتطبيق القواعد (Rules) لحظياً دون تدخل بشري،
+                                مما يضمن النزاهة والعدالة بين المشتركين.
+                            </p>
+                            <span class="tech-badge">Automated Rules</span>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-auto p-4 bg-white bg-opacity-5 rounded-lg border border-gray-700 flex items-center gap-4">
+                        <div class="text-3xl font-bold text-blue-400">100%</div>
+                        <p class="text-xs text-gray-300">
+                            أتمتة القواعد<br />
+                            Zero Manual Intervention
+                        </p>
+                        <div class="h-8 w-px bg-gray-600 mx-2"></div>
+                        <div class="text-3xl font-bold text-orange-400">SLA</div>
+                        <p class="text-xs text-gray-300">
+                            حماية مستوى الخدمة<br />
+                            عبر التحكم في التدفق
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="flex justify-between items-center pt-6 mt-2 border-t border-gray-700 text-xs text-gray-500">
+                <p>Subscription Enforcement &amp; Traffic Control Logic</p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-gray-800 rounded">Rate Limiting</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">SLA Protection</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">Auto-Scaling</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

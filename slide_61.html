@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Support Ticket System Flow</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+            gap: 30px;
+        }
+
+        /* Flow Diagram Section */
+        .flow-container {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .flow-title {
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            background-color: #0B1F3B;
+            padding: 0 15px;
+            color: #60A5FA;
+            font-weight: 700;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        /* Connecting Line */
+        .flow-line {
+            position: absolute;
+            top: 35px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            border-radius: 2px;
+        }
+
+        /* Animated Progress on Line */
+        .flow-progress {
+            position: absolute;
+            top: 35px;
+            right: 50px;
+            /* Start from right for RTL */
+            height: 3px;
+            width: 30%;
+            background-color: #3B82F6;
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            width: 180px;
+            position: relative;
+        }
+
+        .node-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-node:hover .node-circle {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .node-label {
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .node-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        /* Step Colors */
+        .step-1 .node-circle {
+            border-color: #64748B;
+            color: #94A3B8;
+        }
+
+        /* Creation */
+        .step-2 .node-circle {
+            border-color: #F59E0B;
+            color: #F59E0B;
+        }
+
+        /* Triage */
+        .step-3 .node-circle {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        /* Resolution */
+        .step-4 .node-circle {
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        /* Closure */
+
+        /* Feature Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            flex: 1;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #CBD5E1;
+        }
+
+        .check-icon {
+            color: #10B981;
+            margin-top: 4px;
+        }
+
+        /* Specific Card Styles */
+        .card-central .card-icon {
+            color: #A78BFA;
+            border: 1px solid #8B5CF6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .card-sla .card-icon {
+            color: #F87171;
+            border: 1px solid #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .card-future .card-icon {
+            color: #34D399;
+            border: 1px solid #10B981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* SLA Badge */
+        .sla-badge {
+            background-color: #1E293B;
+            border: 1px solid #EF4444;
+            color: #FCA5A5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-400"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Customer Excellence</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    نظام التذاكر الموحد <span class="text-gray-400">(Unified Support)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Centralized Issue Resolution &amp; Tracking</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Top: Flow Process -->
+            <div class="flow-container">
+                <div class="flow-title">دورة حياة التذكرة (Ticket Lifecycle)</div>
+                <div class="flow-steps">
+                    <!-- Line -->
+                    <div class="flow-line"></div>
+                    <div class="flow-progress"></div>
+                    <!-- Step 1: Ingestion -->
+                    <div class="step-node step-1">
+                        <div class="node-circle">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3 class="node-label">1. الإنشاء</h3>
+                        <p class="node-desc">إنشاء التذكرة من التطبيق (مستخدم، مطعم، سائق) وتحديد نوع المشكلة.</p>
+                    </div>
+                    <!-- Step 2: Triage -->
+                    <div class="step-node step-2">
+                        <div class="node-circle">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <h3 class="node-label">2. التصنيف</h3>
+                        <p class="node-desc">توجيه آلي (Routing) بناءً على الأولوية والقسم المختص.</p>
+                    </div>
+                    <!-- Step 3: Resolution -->
+                    <div class="step-node step-3">
+                        <div class="node-circle">
+                            <i class="fas fa-user-headset"></i>
+                        </div>
+                        <h3 class="node-label">3. المعالجة</h3>
+                        <p class="node-desc">تدخل موظف الدعم أو الحل الآلي (Refund) مع تتبع الزمن.</p>
+                    </div>
+                    <!-- Step 4: Closure -->
+                    <div class="step-node step-4">
+                        <div class="node-circle">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="node-label">4. الإغلاق</h3>
+                        <p class="node-desc">إشعار المستخدم بالحل وطلب التقييم (CSAT).</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom: Feature Cards -->
+            <div class="features-grid">
+                <!-- Card 1: Centralized -->
+                <div class="feature-card card-central">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+                        <h3 class="card-title">منصة مركزية (Omnichannel)</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li class="list-item">
+                            <i class="fas fa-check-circle check-icon"></i>
+                            <p>واجهة موحدة تجمع تذاكر المطاعم والسائقين والعملاء.</p>
+                        </li>
+                        <li class="list-item">
+                            <i class="fas fa-check-circle check-icon"></i>
+                            <p>سجل كامل (Logs) لكل طلب وتذكرة لسهولة الرجوع.</p>
+                        </li>
+                        <li class="list-item">
+                            <i class="fas fa-check-circle check-icon"></i>
+                            <p>ربط التذكرة برقم الطلب (Order ID) تلقائياً.</p>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Card 2: SLA -->
+                <div class="feature-card card-sla">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-stopwatch"></i></div>
+                        <h3 class="card-title">إدارة مستوى الخدمة (SLA)</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li class="list-item">
+                            <i class="fas fa-exclamation-circle text-red-400 mt-1"></i>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white font-bold">High Priority</span>
+                                    <span class="sla-badge">15 Min</span>
+                                </div>
+                                <p class="text-xs">مشاكل الطلبات الجارية (Live Orders)</p>
+                            </div>
+                        </li>
+                        <li class="list-item border-t border-gray-700 pt-2">
+                            <i class="fas fa-info-circle text-blue-400 mt-1"></i>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white font-bold">Low Priority</span>
+                                    <span class="sla-badge border-blue-400 text-blue-300">24 Hrs</span>
+                                </div>
+                                <p class="text-xs">استفسارات عامة أو شكاوى سابقة</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Card 3: Future -->
+                <div class="feature-card card-future">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-comments"></i></div>
+                        <h3 class="card-title">قابلية التوسع (Scalability)</h3>
+                    </div>
+                    <ul class="card-list">
+                        <li class="list-item">
+                            <i class="fas fa-robot check-icon"></i>
+                            <p>جاهزية لربط Chatbot للرد الآلي (FAQ).</p>
+                        </li>
+                        <li class="list-item">
+                            <i class="fas fa-headset check-icon"></i>
+                            <p>ترقية النظام إلى Live Chat للدعم المباشر مستقبلاً.</p>
+                        </li>
+                        <li class="list-item">
+                            <i class="fas fa-chart-pie check-icon"></i>
+                            <p>لوحة تحليلات لأداء فريق الدعم (Agent Performance).</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Operational Efficiency &amp; Customer Satisfaction</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-double text-blue-400"></i>
+                <p>End-to-End Tracking Enabled</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

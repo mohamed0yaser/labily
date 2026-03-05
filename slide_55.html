@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Impact of Subscription Tier</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+            --accent-purple: #8B5CF6;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Glass Panel Styling */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-orange);
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .impact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .impact-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .formula-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed #3B82F6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-purple-500"></span>
+                    <p class="text-purple-400 font-bold uppercase tracking-widest text-sm">Performance Impact</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    تأثير الباقة على <span class="text-purple-400">الأداء والعوائد</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">كيف ترفع ترقية الباقة من مقاييس نجاح المطعم</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 px-12 py-8 grid grid-cols-12 gap-8 z-10">
+            <!-- Left Column: Logic & Benefits (5 Columns) -->
+            <div class="col-span-5 flex flex-col gap-6">
+                <div class="glass-panel p-1 flex-1 flex flex-col">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-rocket text-purple-400"></i>
+                            محركات النمو عبر الباقات
+                        </h3>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center p-2">
+                        <!-- Impact 1 -->
+                        <div class="impact-item">
+                            <div class="icon-box bg-blue-500 bg-opacity-20 text-blue-400">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">زيادة الظهور (Visibility)</p>
+                                <p class="text-gray-400 text-xs leading-relaxed">الباقات العليا تمنح المطعم أولوية في
+                                    القوائم ووسام "موصى به"، مما يرفع عدد المشاهدات.</p>
+                            </div>
+                        </div>
+                        <!-- Impact 2 -->
+                        <div class="impact-item">
+                            <div class="icon-box bg-green-500 bg-opacity-20 text-green-400">
+                                <i class="fas fa-mouse-pointer"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">معدل النقر (CTR)</p>
+                                <p class="text-gray-400 text-xs leading-relaxed">الصور المحسنة وشارات الترويج المتاحة في
+                                    الباقات المتقدمة تجذب انتباه المستخدم.</p>
+                            </div>
+                        </div>
+                        <!-- Impact 3 -->
+                        <div class="impact-item">
+                            <div class="icon-box bg-orange-500 bg-opacity-20 text-orange-400">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">حماية مستوى الخدمة (SLA)</p>
+                                <p class="text-gray-400 text-xs leading-relaxed">حدود الطلبات تمنع تكدس المطبخ وانهيار
+                                    الجودة، مما يحافظ على التقييمات العالية.</p>
+                            </div>
+                        </div>
+                        <!-- Impact 4 -->
+                        <div class="impact-item">
+                            <div class="icon-box bg-pink-500 bg-opacity-20 text-pink-400">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">تحسين المنيو (Optimization)</p>
+                                <p class="text-gray-400 text-xs leading-relaxed">التقارير المتقدمة تكشف الأصناف الأكثر
+                                    ربحية وتلك التي تسبب إلغاءات.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Formula Box -->
+                <div class="formula-box">
+                    <p class="text-sm text-blue-300 uppercase tracking-widest mb-2 font-bold">معادلة العائد على
+                        الاستثمار في الترقية</p>
+                    <div class="flex items-center justify-center gap-3 text-lg font-bold">
+                        <span class="text-white">نمو الأرباح</span>
+                        <i class="fas fa-arrow-right text-gray-500 text-sm"></i>
+                        <span class="text-green-400">(زيادة الطلبات × متوسط السلة)</span>
+                        <i class="fas fa-minus text-gray-500 text-sm"></i>
+                        <span class="text-red-400">تكلفة الاشتراك الإضافية</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column: Visuals & KPIs (7 Columns) -->
+            <div class="col-span-7 flex flex-col gap-6">
+                <!-- Top Row: KPI Cards -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="kpi-card border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Avg. Order Volume</p>
+                            <i class="fas fa-shopping-bag text-blue-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">+40%</p>
+                        <p class="text-xs text-blue-300 mt-1">عند الترقية من Basic إلى Pro</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-green-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Conversion Rate</p>
+                            <i class="fas fa-exchange-alt text-green-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">x2.5</p>
+                        <p class="text-xs text-green-300 mt-1">بفضل أدوات التسويق</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-purple-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Customer Rating</p>
+                            <i class="fas fa-star text-purple-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">4.8/5</p>
+                        <p class="text-xs text-purple-300 mt-1">متوسط تقييم باقات Enterprise</p>
+                    </div>
+                </div>
+                <!-- Bottom Row: Charts -->
+                <div class="glass-panel p-6 flex-1 grid grid-cols-2 gap-6">
+                    <!-- Chart 1: Order Volume by Tier -->
+                    <div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-gray-300 mb-4 text-center">متوسط حجم الطلبات الشهري حسب الباقة
+                        </p>
+                        <div class="relative w-full h-48">
+                            <canvas id="volumeChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400 text-center">
+                            <p>الباقات العليا تفتح قنوات تسويق وأدوات ولاء</p>
+                        </div>
+                    </div>
+                    <!-- Chart 2: SLA & Quality -->
+                    <div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-gray-300 mb-4 text-center">مؤشر جودة الخدمة (SLA Compliance)
+                        </p>
+                        <div class="relative w-full h-48">
+                            <canvas id="slaChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400 text-center">
+                            <p>إدارة الطاقة الاستيعابية تحسن الالتزام بالوقت</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Chart 1: Order Volume (Bar Chart)
+        const ctx1 = document.getElementById('volumeChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Free', 'Basic', 'Pro', 'Enterprise'],
+                datasets: [{
+                    label: 'متوسط الطلبات/يوم',
+                    data: [15, 45, 120, 350],
+                    backgroundColor: [
+                        'rgba(148, 163, 184, 0.5)', // Free (Gray)
+                        'rgba(59, 130, 246, 0.6)',  // Basic (Blue)
+                        'rgba(242, 140, 40, 0.7)',  // Pro (Orange)
+                        'rgba(139, 92, 246, 0.8)'   // Enterprise (Purple)
+                    ],
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#94a3b8', font: { family: 'Cairo' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#e2e8f0', font: { family: 'Cairo' } }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: SLA Compliance (Line Chart)
+        const ctx2 = document.getElementById('slaChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'],
+                datasets: [
+                    {
+                        label: 'Pro Plan',
+                        data: [92, 94, 95, 96, 97, 98],
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Basic Plan',
+                        data: [85, 86, 84, 87, 85, 86],
+                        borderColor: '#3B82F6',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { family: 'Cairo', size: 10 }, boxWidth: 10 }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 80,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Roadmap &amp; Closing</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+            justify-content: space-between;
+        }
+
+        /* Roadmap Section */
+        .roadmap-container {
+            position: relative;
+            padding-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 55px;
+            /* Aligns with icon center */
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .timeline-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .milestone-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Milestone Connector Dot */
+        .connector-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            border: 3px solid;
+            position: absolute;
+            top: -28px;
+            /* Position on the line */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .milestone-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: -50px;
+            /* Pull up to overlap line */
+            background-color: #0B1F3B;
+            position: relative;
+            z-index: 2;
+        }
+
+        .q-label {
+            position: absolute;
+            top: -15px;
+            background-color: #1E293B;
+            color: #FFFFFF;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            border: 1px solid;
+            white-space: nowrap;
+        }
+
+        .milestone-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .milestone-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            margin-bottom: 12px;
+        }
+
+        .milestone-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            text-align: right;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #CBD5E1;
+            margin-bottom: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Colors for Quarters */
+        /* Q1 */
+        .q1 .milestone-icon-wrapper {
+            border-color: #60A5FA;
+            color: #60A5FA;
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
+        }
+
+        .q1 .q-label {
+            border-color: #60A5FA;
+            color: #60A5FA;
+        }
+
+        .q1 .connector-dot {
+            border-color: #60A5FA;
+        }
+
+        /* Q2 */
+        .q2 .milestone-icon-wrapper {
+            border-color: #F59E0B;
+            color: #F59E0B;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
+
+        .q2 .q-label {
+            border-color: #F59E0B;
+            color: #F59E0B;
+        }
+
+        .q2 .connector-dot {
+            border-color: #F59E0B;
+        }
+
+        /* Q3 */
+        .q3 .milestone-icon-wrapper {
+            border-color: #10B981;
+            color: #10B981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .q3 .q-label {
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        .q3 .connector-dot {
+            border-color: #10B981;
+        }
+
+        /* Q4 */
+        .q4 .milestone-icon-wrapper {
+            border-color: #A78BFA;
+            color: #A78BFA;
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+        }
+
+        .q4 .q-label {
+            border-color: #A78BFA;
+            color: #A78BFA;
+        }
+
+        .q4 .connector-dot {
+            border-color: #A78BFA;
+        }
+
+        /* Closing Section */
+        .closing-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-top: auto;
+        }
+
+        .cta-content h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+
+        .cta-content p {
+            color: #94A3B8;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .contact-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #F28C28;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            color: #E2E8F0;
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(242, 140, 40, 0.2);
+            color: #F28C28;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-green-500"></span>
+                    <p class="text-green-400 font-bold uppercase tracking-widest text-sm">Strategic Vision</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    خارطة الطريق <span class="text-gray-400">والخاتمة</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Execution Plan &amp; Next Steps</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Roadmap -->
+            <div class="roadmap-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-cards">
+                    <!-- Q1 -->
+                    <div class="milestone-card q1">
+                        <div class="milestone-icon-wrapper">
+                            <i class="fas fa-flag"></i>
+                            <span class="q-label">الربع الأول (Q1)</span>
+                        </div>
+                        <h3 class="milestone-title">MVP Launch</h3>
+                        <p class="milestone-desc">الانطلاق الرسمي في الكويت</p>
+                        <ul class="milestone-list">
+                            <li class="milestone-item"><i class="fas fa-check text-blue-400"></i> إطلاق تطبيقات
+                                (iOS/Android)</li>
+                            <li class="milestone-item"><i class="fas fa-check text-blue-400"></i> تفعيل الدفع النقدي +
+                                المحفظة</li>
+                            <li class="milestone-item"><i class="fas fa-check text-blue-400"></i> تشغيل 500 سائق و 200
+                                مطعم</li>
+                        </ul>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="milestone-card q2">
+                        <div class="milestone-icon-wrapper">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span class="q-label">الربع الثاني (Q2)</span>
+                        </div>
+                        <h3 class="milestone-title">Expansion Phase</h3>
+                        <p class="milestone-desc">التوسع إلى مصر (القاهرة/إسكندرية)</p>
+                        <ul class="milestone-list">
+                            <li class="milestone-item"><i class="fas fa-check text-yellow-500"></i> تفعيل Multi-Currency
+                            </li>
+                            <li class="milestone-item"><i class="fas fa-check text-yellow-500"></i> إطلاق نظام الولاء
+                                (Loyalty)</li>
+                            <li class="milestone-item"><i class="fas fa-check text-yellow-500"></i> تحسين خوارزميات
+                                التوزيع</li>
+                        </ul>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="milestone-card q3">
+                        <div class="milestone-icon-wrapper">
+                            <i class="fas fa-rocket"></i>
+                            <span class="q-label">الربع الثالث (Q3)</span>
+                        </div>
+                        <h3 class="milestone-title">Advanced Growth</h3>
+                        <p class="milestone-desc">ميزات متقدمة وشراكات</p>
+                        <ul class="milestone-list">
+                            <li class="milestone-item"><i class="fas fa-check text-green-500"></i> محرك عروض ذكي (Promo
+                                Engine)</li>
+                            <li class="milestone-item"><i class="fas fa-check text-green-500"></i> تكامل مع أنظمة POS
+                                للمطاعم</li>
+                            <li class="milestone-item"><i class="fas fa-check text-green-500"></i> تحليلات BI متقدمة
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="milestone-card q4">
+                        <div class="milestone-icon-wrapper">
+                            <i class="fas fa-globe-asia"></i>
+                            <span class="q-label">الربع الرابع (Q4)</span>
+                        </div>
+                        <h3 class="milestone-title">Regional Scale</h3>
+                        <p class="milestone-desc">دخول السوق الخليجي (KSA/UAE)</p>
+                        <ul class="milestone-list">
+                            <li class="milestone-item"><i class="fas fa-check text-purple-400"></i> التحول الجزئي لـ
+                                Microservices</li>
+                            <li class="milestone-item"><i class="fas fa-check text-purple-400"></i> دعم Chatbot بالذكاء
+                                الاصطناعي</li>
+                            <li class="milestone-item"><i class="fas fa-check text-purple-400"></i> الوصول لـ 50,000 طلب
+                                يومي</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Closing CTA -->
+            <div class="closing-container">
+                <div class="cta-content">
+                    <h2>فرصة للاستثمار في مستقبل التوصيل</h2>
+                    <p>
+                        نحن لا نبني مجرد تطبيق توصيل، بل نبني بنية تحتية لوجستية ذكية قابلة للتوسع إقليمياً.
+                        نموذجنا المالي المدروس وتقنياتنا المرنة تضمن عائداً استثمارياً مستداماً.
+                    </p>
+                    <div class="mt-4 flex gap-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-300 bg-gray-800 px-3 py-1 rounded">
+                            <i class="fas fa-chart-line text-green-400"></i>
+                            <span>High ROI Potential</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300 bg-gray-800 px-3 py-1 rounded">
+                            <i class="fas fa-shield-alt text-blue-400"></i>
+                            <span>Risk Mitigated Strategy</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <p class="text-sm text-gray-400 mb-3 uppercase tracking-widest font-bold">للتواصل والاستفسار</p>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400">البريد الإلكتروني</p>
+                            <p class="font-bold">mohamedyaser2023@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item mt-3">
+                        <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400">الهاتف المباشر</p>
+                            <p class="font-bold">+201092833551</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Confidential Investment Proposal 2026</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-infinity text-blue-500"></i>
+                <p>Building for the Long Term</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

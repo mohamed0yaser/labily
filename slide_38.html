@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Restaurant App - Menu &amp; Zone Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Decorative Elements */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background-color: #3B82F6;
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background-color: #F28C28;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            padding: 20px 60px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        /* Grid Layout */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 24px;
+            height: 100%;
+        }
+
+        /* Feature Card */
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Icon */
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Typography */
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Accent Colors & Variations */
+        /* Card 1: Menu Items - Orange */
+        .card-menu .icon-box {
+            color: #FDBA74;
+            background-color: rgba(242, 140, 40, 0.15);
+            border: 1px solid rgba(242, 140, 40, 0.3);
+        }
+
+        .card-menu:hover {
+            border-top: 4px solid #F28C28;
+        }
+
+        /* Card 2: Zones - Blue */
+        .card-zones .icon-box {
+            color: #60A5FA;
+            background-color: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .card-zones:hover {
+            border-top: 4px solid #3B82F6;
+        }
+
+        /* Card 3: Modifiers - Purple */
+        .card-mods .icon-box {
+            color: #A78BFA;
+            background-color: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .card-mods:hover {
+            border-top: 4px solid #8B5CF6;
+        }
+
+        /* Card 4: Min Order - Green */
+        .card-min .icon-box {
+            color: #6EE7B7;
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .card-min:hover {
+            border-top: 4px solid #10B981;
+        }
+
+        /* Card 5: Availability - Red */
+        .card-time .icon-box {
+            color: #F87171;
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .card-time:hover {
+            border-top: 4px solid #EF4444;
+        }
+
+        /* Card 6: Sync - Cyan */
+        .card-sync .icon-box {
+            color: #22D3EE;
+            background-color: rgba(34, 211, 238, 0.15);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+
+        .card-sync:hover {
+            border-top: 4px solid #06B6D4;
+        }
+
+        /* Number Badge */
+        .card-number {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 3rem;
+            font-weight: 900;
+            opacity: 0.05;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Backgrounds -->
+        <div class="bg-pattern"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Restaurant App Capabilities
+                    </p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    إدارة المنيو والمناطق <span class="text-gray-400">(Menu &amp; Zones)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">تحكم كامل في العرض والطلب الجغرافي لزيادة الكفاءة</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <div class="feature-grid">
+                <!-- Feature 1: Menu Management -->
+                <div class="feature-card card-menu">
+                    <span class="card-number">01</span>
+                    <div class="icon-box">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <p class="card-title">إدارة عناصر القائمة (Items)</p>
+                    <p class="card-desc">
+                        تحكم مرن في الأصناف، الصور، والأسعار. إمكانية تفعيل أو إيقاف أي صنف فوراً (Out of Stock) لتفادي
+                        الطلبات الملغاة.
+                    </p>
+                </div>
+                <!-- Feature 2: Delivery Zones -->
+                <div class="feature-card card-zones">
+                    <span class="card-number">02</span>
+                    <div class="icon-box">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <p class="card-title">مناطق التوصيل المتدرجة</p>
+                    <p class="card-desc">
+                        رسم مناطق توصيل متعددة (Polygon Geofencing) مع تحديد رسوم توصيل وزمن متوقع مختلف لكل منطقة حسب
+                        البعد.
+                    </p>
+                </div>
+                <!-- Feature 3: Modifiers & Add-ons -->
+                <div class="feature-card card-mods">
+                    <span class="card-number">03</span>
+                    <div class="icon-box">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <p class="card-title">الإضافات والخيارات (Add-ons)</p>
+                    <p class="card-desc">
+                        دعم خيارات معقدة (إجباري/اختياري) للأصناف (مثل: درجة الطهي، الإضافات، المشروبات) لزيادة متوسط
+                        قيمة السلة.
+                    </p>
+                </div>
+                <!-- Feature 4: Minimum Order -->
+                <div class="feature-card card-min">
+                    <span class="card-number">04</span>
+                    <div class="icon-box">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <p class="card-title">الحد الأدنى للطلب (MOV)</p>
+                    <p class="card-desc">
+                        تحديد حد أدنى لقيمة الطلب لكل منطقة جغرافية أو لكل فرع بشكل مستقل لضمان جدوى التوصيل للمسافات
+                        البعيدة.
+                    </p>
+                </div>
+                <!-- Feature 5: Time-based Availability -->
+                <div class="feature-card card-time">
+                    <span class="card-number">05</span>
+                    <div class="icon-box">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <p class="card-title">التوفر الزمني (Scheduling)</p>
+                    <p class="card-desc">
+                        جدولة توفر أصناف معينة (مثل قائمة الإفطار فقط صباحاً) أو إغلاق مناطق معينة في أوقات الذروة
+                        الشديدة.
+                    </p>
+                </div>
+                <!-- Feature 6: Price Sync -->
+                <div class="feature-card card-sync">
+                    <span class="card-number">06</span>
+                    <div class="icon-box">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <p class="card-title">مزامنة العملات والأسعار</p>
+                    <p class="card-desc">
+                        إدارة الأسعار حسب المدينة والعملة المحلية تلقائياً للفروع المتعددة، مع تحديث فوري عبر كافة
+                        تطبيقات المستخدمين.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center bg-[#09182d] z-10">
+            <p class="text-xs text-gray-500">Operational Control Dashboard</p>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <p>Geo-fencing Enabled</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

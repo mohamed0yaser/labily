@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>لبيلى Marketplace Platform</title>
+	<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+	<style>
+		html, body {
+			width: 100vw;
+			height: 100vh;
+			min-width: 100vw;
+			min-height: 100vh;
+			margin: 0;
+			padding: 0;
+			background: #0B1F3B;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
+		.nav-btn {
+			position: fixed;
+			top: 50%;
+			z-index: 1000;
+			font-size: 2rem;
+			background: rgba(0,0,0,0.2);
+			border: none;
+			color: #fff;
+			padding: 0.5em 0.8em;
+			border-radius: 50%;
+			cursor: pointer;
+			outline: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transform: translateY(-50%);
+		}
+		#prevSlide { right: 40px; }
+		#nextSlide { left: 40px; }
+		#slideFrame {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			min-width: 100vw;
+			min-height: 100vh;
+			border: none;
+			background: #0B1F3B;
+			z-index: 1;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
+	</style>
+</head>
+<body>
+	<button id="prevSlide" class="nav-btn" aria-label="السابق"><i class="fas fa-chevron-right"></i></button>
+	<button id="nextSlide" class="nav-btn" aria-label="التالي"><i class="fas fa-chevron-left"></i></button>
+	<iframe id="slideFrame" src="slide_1.html" allowfullscreen></iframe>
+	<script>
+		const slides = [
+			'slide_1.html',
+            'slide_2.html',
+            'slide_3.html',
+            'slide_4.html',
+            'slide_5.html',
+            'slide_6.html',
+            'slide_8.html',
+            'slide_9.html',
+            'slide_10.html',
+            'slide_11.html',
+            'slide_12.html',
+            'slide_13.html',
+            'slide_14.html',
+            'slide_15.html',
+            'slide_16.html',
+            'slide_17.html',
+            'slide_18.html',
+            'slide_19.html',
+            'slide_20.html',
+            'slide_21.html',
+            'slide_22.html',
+            'slide_23.html',
+            'slide_24.html',
+            'slide_25.html',
+            'slide_26.html',
+			'slide_27.html',
+            'slide_28.html',
+            'slide_29.html',
+            'slide_30.html',
+            'slide_31.html',
+            'slide_32.html',
+            'slide_33.html',
+            'slide_34.html',
+			'slide_35.html',
+			'slide_36.html',
+			'slide_37.html',
+			'slide_38.html',
+            'slide_39.html',
+            'slide_41.html',
+            'slide_42.html',
+            'slide_43.html',
+            'slide_44.html',
+            'slide_45.html',
+			'slide_46.html',
+			'slide_47.html',
+            'slide_48.html',
+            'slide_49.html',
+            'slide_50.html',
+            'slide_51.html',
+            'slide_52.html',
+            'slide_53.html',
+            'slide_54.html',
+            'slide_55.html',
+			'slide_56.html',
+			'slide_57.html',
+            'slide_58.html',
+            'slide_59.html',
+            'slide_60.html',
+            'slide_61.html',
+            'slide_62.html',
+            'slide_63.html',
+            'slide_64.html',
+            'slide_65.html',
+            'slide_66.html',
+            'slide_67.html',
+            'slide_68.html',
+		];
+		let currentSlide = 0;
+		const frame = document.getElementById('slideFrame');
+		function showSlide(idx) {
+			if (idx < 0 || idx >= slides.length) return;
+			currentSlide = idx;
+			frame.src = slides[currentSlide];
+		}
+		document.getElementById('prevSlide').onclick = function() {
+			if (currentSlide > 0) showSlide(currentSlide - 1);
+		};
+		document.getElementById('nextSlide').onclick = function() {
+			if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+		};
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'ArrowLeft') document.getElementById('nextSlide').click();
+			if (e.key === 'ArrowRight') document.getElementById('prevSlide').click();
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Agenda</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+       /* *, *::before, *::after { box-sizing: border-box; }*/
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+       /* @media (max-width: 1200px) {
+            .slide-container { padding: 8px; }
+            .core-system { margin: 0 8px; }
+            .app-card, .engine-box, .infra-badge { padding: 8px; font-size: 0.95em; }
+        }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; padding: 4px; }
+            .core-system { margin: 0 4px; }
+            .app-card, .engine-box, .infra-badge { padding: 6px; font-size: 0.9em; }
+            .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; padding: 2px; }
+            .core-system { margin: 0 2px; }
+            .app-card, .engine-box, .infra-badge { padding: 4px; font-size: 0.85em; }
+            .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .px-12 { padding-left: 4px !important; padding-right: 4px !important; }
+            .pt-8 { padding-top: 4px !important; }
+            .pb-4 { padding-bottom: 2px !important; }
+            .p-8 { padding: 4px !important; }
+            .mx-20 { margin-left: 2px !important; margin-right: 2px !important; }
+        }*/
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+        }
+        .accent-orange {
+            color: #F28C28;
+        }
+
+        .bg-accent-orange {
+            background-color: #F28C28;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(242, 140, 40, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .section-number {
+            font-family: 'Arial', sans-serif;
+            font-weight: 900;
+            opacity: 0.2;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 3rem;
+            color: #F28C28;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            padding: 20px 60px;
+        }
+
+        .header-stripe {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            width: 200px;
+            height: 8px;
+            background-color: #F28C28;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <div class="header-stripe"></div>
+        <!-- Header -->
+        <div class="flex justify-between items-center px-12 pt-10 pb-4 z-10">
+            <div>
+                <h1 class="text-4xl font-bold text-white flex items-center gap-3">
+                    <i class="fas fa-list-ul accent-orange"></i>
+                    جدول المحتويات
+                </h1>
+                <p class="text-gray-400 mt-2 text-lg">خارطة طريق عرض المشروع الاستثماري</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-500 uppercase tracking-widest">Agenda</p>
+                <p class="text-xs text-gray-600">February 2026</p>
+            </div>
+        </div>
+        <!-- Grid Content -->
+        <div class="flex-1 px-12 pb-12 z-10 flex items-center justify-center">
+            <div class="grid grid-cols-6 gap-4 w-full h-full content-center">
+                <!-- Item 1 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">01</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-briefcase text-blue-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Executive Summary</p>
+                    </div>
+                    <p class="text-xs text-gray-400">ملخص تنفيذي</p>
+                </div>
+                <!-- Item 2 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">02</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-bullseye text-green-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Market Positioning</p>
+                    </div>
+                    <p class="text-xs text-gray-400">التموضع السوقي</p>
+                </div>
+                <!-- Item 3 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">03</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-money-bill-wave text-yellow-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Business Model</p>
+                    </div>
+                    <p class="text-xs text-gray-400">نموذج العمل</p>
+                </div>
+                <!-- Item 4 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">04</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-sitemap text-purple-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">System Architecture</p>
+                    </div>
+                    <p class="text-xs text-gray-400">هيكلية النظام</p>
+                </div>
+                <!-- Item 5 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">05</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-mobile-alt text-red-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">User App</p>
+                    </div>
+                    <p class="text-xs text-gray-400">تطبيق المستخدم</p>
+                </div>
+                <!-- Item 6 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">06</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-store text-orange-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Restaurant App</p>
+                    </div>
+                    <p class="text-xs text-gray-400">تطبيق المطعم</p>
+                </div>
+                <!-- Item 7 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">07</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-motorcycle text-teal-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Driver App</p>
+                    </div>
+                    <p class="text-xs text-gray-400">تطبيق السائق</p>
+                </div>
+                <!-- Item 8 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">08</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-route text-indigo-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Delivery Engine</p>
+                    </div>
+                    <p class="text-xs text-gray-400">محرك التوصيل</p>
+                </div>
+                <!-- Item 9 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">09</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-calculator text-pink-400 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Financial Engine</p>
+                    </div>
+                    <p class="text-xs text-gray-400">المحرك المالي</p>
+                </div>
+                <!-- Item 10 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">10</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-tags text-blue-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Subscription System</p>
+                    </div>
+                    <p class="text-xs text-gray-400">نظام الاشتراكات</p>
+                </div>
+                <!-- Item 11 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">11</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-star text-yellow-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Loyalty &amp; Voucher</p>
+                    </div>
+                    <p class="text-xs text-gray-400">الولاء والقسائم</p>
+                </div>
+                <!-- Item 12 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">12</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-undo text-red-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Refund &amp; Cancel</p>
+                    </div>
+                    <p class="text-xs text-gray-400">الإلغاء والاسترداد</p>
+                </div>
+                <!-- Item 13 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">13</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-headset text-green-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Support System</p>
+                    </div>
+                    <p class="text-xs text-gray-400">نظام الدعم</p>
+                </div>
+                <!-- Item 14 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">14</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-shield-alt text-gray-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">NFR Requirements</p>
+                    </div>
+                    <p class="text-xs text-gray-400">المتطلبات غير الوظيفية</p>
+                </div>
+                <!-- Item 15 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">15</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-expand-arrows-alt text-orange-300 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Scalability Plan</p>
+                    </div>
+                    <p class="text-xs text-gray-400">خطة التوسع</p>
+                </div>
+                <!-- Item 16 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">16</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Risk Analysis</p>
+                    </div>
+                    <p class="text-xs text-gray-400">تحليل المخاطر</p>
+                </div>
+                <!-- Item 17 -->
+                <div class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28">
+                    <span class="section-number">17</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-coins text-yellow-500 text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Budget Breakdown</p>
+                    </div>
+                    <p class="text-xs text-gray-400">تفصيل الميزانية</p>
+                </div>
+                <!-- Item 18 -->
+                <div
+                    class="glass-card p-4 rounded-lg relative overflow-hidden flex flex-col justify-end h-28 bg-white bg-opacity-10 border-orange-500 border-opacity-50">
+                    <span class="section-number" style="color: #fff;">18</span>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-flag-checkered text-white text-sm"></i>
+                        <p class="font-bold text-sm leading-tight text-white">Roadmap &amp; End</p>
+                    </div>
+                    <p class="text-xs text-gray-300">الخاتمة</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-4 border-t border-gray-700 flex justify-between items-center text-xs text-gray-500">
+            <p>منصة توصيل متعددة المدن - عرض استثماري</p>
+            <p>Confidential &amp; Proprietary</p>
+        </div>
+    </div>
+</body>
+
+</html>

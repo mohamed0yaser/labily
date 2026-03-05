@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Core Engines Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Layout */
+        .engines-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 40px 20px 40px;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Connection Lines */
+        .data-bus-line {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            border-radius: 2px;
+        }
+
+        .data-bus-node {
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: #0B1F3B;
+            border: 2px solid;
+            border-radius: 50%;
+        }
+
+        /* Engine Card */
+        .engine-card {
+            flex: 1;
+            height: 420px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .engine-card:hover {
+            transform: translateY(-10px);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Card Header */
+        .card-header {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            letter-spacing: 0.5px;
+        }
+
+        /* Card Body */
+        .card-body {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #CBD5E1;
+            line-height: 1.4;
+        }
+
+        .feature-icon {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        /* Card Footer / Connector */
+        .card-connector {
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 0;
+        }
+
+        .connector-line {
+            width: 2px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            bottom: -25px;
+            /* Connects to bus */
+            left: 50%;
+        }
+
+        /* Specific Colors */
+        /* Delivery - Blue */
+        .card-delivery {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .card-delivery .icon-circle {
+            color: #3B82F6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .card-delivery .feature-icon {
+            color: #3B82F6;
+        }
+
+        .card-delivery .data-bus-node {
+            border-color: #3B82F6;
+        }
+
+        /* Financial - Green */
+        .card-finance {
+            border-top: 4px solid #10B981;
+        }
+
+        .card-finance .icon-circle {
+            color: #10B981;
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .card-finance .feature-icon {
+            color: #10B981;
+        }
+
+        .card-finance .data-bus-node {
+            border-color: #10B981;
+        }
+
+        /* Subscription - Orange */
+        .card-sub {
+            border-top: 4px solid #F28C28;
+        }
+
+        .card-sub .icon-circle {
+            color: #F28C28;
+            background-color: rgba(242, 140, 40, 0.1);
+        }
+
+        .card-sub .feature-icon {
+            color: #F28C28;
+        }
+
+        .card-sub .data-bus-node {
+            border-color: #F28C28;
+        }
+
+        /* Loyalty - Pink */
+        .card-loyalty {
+            border-top: 4px solid #EC4899;
+        }
+
+        .card-loyalty .icon-circle {
+            color: #EC4899;
+            background-color: rgba(236, 72, 153, 0.1);
+        }
+
+        .card-loyalty .feature-icon {
+            color: #EC4899;
+        }
+
+        .card-loyalty .data-bus-node {
+            border-color: #EC4899;
+        }
+
+        /* Support - Cyan */
+        .card-support {
+            border-top: 4px solid #06B6D4;
+        }
+
+        .card-support .icon-circle {
+            color: #06B6D4;
+            background-color: rgba(6, 182, 212, 0.1);
+        }
+
+        .card-support .feature-icon {
+            color: #06B6D4;
+        }
+
+        .card-support .data-bus-node {
+            border-color: #06B6D4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800 mb-2">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">System Architecture</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    المحركات <span class="text-gray-400">الأساسية (Engines)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">المنطق التشغيلي للنظام (Core Logic Layer)</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="engines-wrapper">
+            <!-- Data Bus Line connecting all -->
+            <div class="data-bus-line"></div>
+            <!-- 1. Delivery Engine -->
+            <div class="engine-card card-delivery">
+                <div class="card-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3 class="card-title">Delivery Engine</h3>
+                    <p class="card-subtitle">إدارة اللوجستيات</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>التسعير الديناميكي (مسافة + ذروة)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>توزيع متتابع (Sequential)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>إعادة توزيع ذكية عند الرفض</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="connector-line"></div>
+                <div class="data-bus-node"></div>
+            </div>
+            <!-- 2. Financial Engine -->
+            <div class="engine-card card-finance">
+                <div class="card-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3 class="card-title">Financial Engine</h3>
+                    <p class="card-subtitle">المدفوعات والتسويات</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>احتساب العمولات بعد الخصم</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>تسويات أسبوعية تلقائية</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>محفظة استرداد (Refund Only)</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="connector-line"></div>
+                <div class="data-bus-node"></div>
+            </div>
+            <!-- 3. Subscription Engine -->
+            <div class="engine-card card-sub">
+                <div class="card-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="card-title">Subscription Engine</h3>
+                    <p class="card-subtitle">إدارة الباقات</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>هيكلة الباقات (Free/Pro)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>فرض حدود الطلبات (Enforcement)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>التحكم في الميزات والظهور</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="connector-line"></div>
+                <div class="data-bus-node"></div>
+            </div>
+            <!-- 4. Loyalty Engine -->
+            <div class="engine-card card-loyalty">
+                <div class="card-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="card-title">Loyalty Engine</h3>
+                    <p class="card-subtitle">المكافآت والولاء</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>نقاط لكل عملية شراء</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>توليد قسائم (Vouchers)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>استراتيجيات الاحتفاظ</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="connector-line"></div>
+                <div class="data-bus-node"></div>
+            </div>
+            <!-- 5. Support System -->
+            <div class="engine-card card-support">
+                <div class="card-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <h3 class="card-title">Support System</h3>
+                    <p class="card-subtitle">خدمة العملاء</p>
+                </div>
+                <div class="card-body">
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>نظام تذاكر موحد (Unified)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>تتبع مستوى الخدمة (SLA)</p>
+                        </li>
+                        <li class="feature-item">
+                            <i class="fas fa-circle feature-icon"></i>
+                            <p>أتمتة الردود الشائعة</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="connector-line"></div>
+                <div class="data-bus-node"></div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>System Architecture &gt; Core Engines</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <p>All engines operate on Modular Monolith architecture</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

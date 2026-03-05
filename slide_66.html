@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Budget Breakdown Comparison</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        /* Pricing Card */
+        .pricing-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Top Bar Indicator */
+        .card-top-bar {
+            height: 6px;
+            width: 100%;
+        }
+
+        /* Header Section */
+        .card-header {
+            padding: 25px 25px 15px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .plan-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .plan-duration {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .plan-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        /* Features List */
+        .card-body {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-group-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748B;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #E2E8F0;
+        }
+
+        .check-icon {
+            font-size: 0.8rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Tech Specs Box at Bottom */
+        .tech-specs {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .spec-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .spec-label {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+
+        .spec-value {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        /* Theme Colors */
+        /* Basic */
+        .theme-basic .card-top-bar {
+            background-color: #10B981;
+        }
+
+        .theme-basic .plan-name {
+            color: #10B981;
+        }
+
+        .theme-basic .plan-duration {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #6EE7B7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .theme-basic .check-icon {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+
+        /* Professional */
+        .theme-pro .card-top-bar {
+            background-color: #F59E0B;
+        }
+
+        .theme-pro .plan-name {
+            color: #F59E0B;
+        }
+
+        .theme-pro .plan-duration {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #FCD34D;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .theme-pro .check-icon {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+
+        .theme-pro {
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.05);
+        }
+
+        /* Enterprise */
+        .theme-ent .card-top-bar {
+            background-color: #8B5CF6;
+        }
+
+        .theme-ent .plan-name {
+            color: #A78BFA;
+        }
+
+        .theme-ent .plan-duration {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: #C4B5FD;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .theme-ent .check-icon {
+            background-color: rgba(139, 92, 246, 0.2);
+            color: #A78BFA;
+        }
+
+        /* Icons in Header */
+        .header-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .theme-basic .header-icon {
+            color: #10B981;
+        }
+
+        .theme-pro .header-icon {
+            color: #F59E0B;
+        }
+
+        .theme-ent .header-icon {
+            color: #8B5CF6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-yellow-500"></span>
+                    <p class="text-yellow-400 font-bold uppercase tracking-widest text-sm">Investment Options</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    جدول مقارنة الميزانيات <span class="text-gray-400">(Budget Breakdown)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Scalable Investment Tiers</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <div class="pricing-grid">
+                <!-- 1. Basic MVP -->
+                <div class="pricing-card theme-basic">
+                    <div class="card-top-bar"></div>
+                    <div class="card-header">
+                        <i class="fas fa-cube header-icon"></i>
+                        <span class="plan-name">Basic MVP</span>
+                        <span class="plan-duration">8 – 10 أسابيع</span>
+                        <p class="plan-desc">الخيار الأمثل للانطلاق السريع واختبار السوق بأقل المخاطر.</p>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <p class="feature-group-title">الميزات الأساسية</p>
+                            <ul class="feature-list">
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>تطبيقات (User, Driver, Restaurant)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>لوحة تحكم Admin أساسية</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>دفع كاش + محفظة (Refund Only)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>توزيع سائقين Sequential</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <p class="feature-group-title">القيود</p>
+                            <ul class="feature-list">
+                                <li class="feature-item"><span class="check-icon bg-gray-700 text-gray-400"><i
+                                            class="fas fa-minus"></i></span>
+                                    <p class="text-gray-400">مدينة واحدة (Single City)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon bg-gray-700 text-gray-400"><i
+                                            class="fas fa-minus"></i></span>
+                                    <p class="text-gray-400">بدون نظام ولاء أو عروض</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tech-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">Scalability:</span>
+                            <span class="spec-value">Vertical Only</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">Architecture:</span>
+                            <span class="spec-value">Monolith</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 2. Professional -->
+                <div class="pricing-card theme-pro transform scale-105 z-10">
+                    <div class="card-top-bar"></div>
+                    <div class="card-header">
+                        <i class="fas fa-rocket header-icon"></i>
+                        <span class="plan-name">Professional</span>
+                        <span class="plan-duration">12 – 16 أسبوعاً</span>
+                        <p class="plan-desc">الحل المتوازن للنمو والتوسع في مدن متعددة مع أدوات تسويق.</p>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <p class="feature-group-title">كل ميزات Basic بالإضافة إلى:</p>
+                            <ul class="feature-list">
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>دعم لبيلى &amp; Multi-Zone</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>نظام الولاء (Loyalty Engine)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>محرك العروض (Promo Codes)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>تقارير أعمال (Business Intelligence)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>نظام تذاكر دعم متكامل</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tech-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">Scalability:</span>
+                            <span class="spec-value">Horizontal Ready</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">Architecture:</span>
+                            <span class="spec-value">Modular Monolith</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3. Enterprise -->
+                <div class="pricing-card theme-ent">
+                    <div class="card-top-bar"></div>
+                    <div class="card-header">
+                        <i class="fas fa-building header-icon"></i>
+                        <span class="plan-name">Enterprise</span>
+                        <span class="plan-duration">20 – 24 أسبوعاً</span>
+                        <p class="plan-desc">منظومة كاملة للتوسع الإقليمي والتشغيل الذكي.</p>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <p class="feature-group-title">كل ميزات Professional بالإضافة إلى:</p>
+                            <ul class="feature-list">
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>Multi-Country &amp; Multi-Currency</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>توزيع ذكي (AI Dispatching)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>تنبؤ بالطلب (Demand Prediction)</p>
+                                </li>
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>Chatbot للدعم الآلي</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto">
+                            <p class="feature-group-title">متقدم</p>
+                            <ul class="feature-list">
+                                <li class="feature-item"><span class="check-icon"><i class="fas fa-check"></i></span>
+                                    <p>High Availability (99.9%)</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tech-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">Scalability:</span>
+                            <span class="spec-value">Auto-Scaling</span>
+                        </div>
+                        <div class="spec-row">
+                            <span class="spec-label">Architecture:</span>
+                            <span class="spec-value">Microservices</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Investment Strategy &amp; ROI Optimization</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-chart-line text-yellow-500"></i>
+                <p>Phased Approach Recommended</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

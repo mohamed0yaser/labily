@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Ban &amp; Termination Policies</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Main Layout */
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Flowchart Area */
+        .flowchart-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        /* Rules Area */
+        .rules-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Tree Nodes */
+        .node {
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .node h4 {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .node p {
+            font-size: 0.7rem;
+            margin: 4px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .node-icon {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        /* Specific Node Styles */
+        .node-start {
+            background-color: #2563EB;
+            border: 2px solid #60A5FA;
+            width: 200px;
+        }
+
+        .node-decision {
+            background: #1E293B;
+            border: 2px dashed #94A3B8;
+            width: 160px;
+            padding: 8px;
+        }
+
+        .node-driver {
+            background-color: #059669;
+            border: 1px solid #34D399;
+            width: 170px;
+        }
+
+        .node-restaurant {
+            background-color: #D97706;
+            border: 1px solid #FCD34D;
+            width: 170px;
+        }
+
+        .node-danger {
+            background-color: #DC2626;
+            border: 1px solid #FCA5A5;
+            width: 170px;
+        }
+
+        /* Connectors */
+        .connector-vertical {
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.3);
+            height: 25px;
+        }
+
+        .branch-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            margin-top: 25px;
+            gap: 10px;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .branch::before {
+            content: '';
+            position: absolute;
+            top: -27px;
+            /* Connect to horizontal bar */
+            left: 50%;
+            width: 2px;
+            height: 27px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Rules Cards */
+        .rule-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 6px;
+        }
+
+        .rule-title {
+            font-weight: 700;
+            color: #E2E8F0;
+            font-size: 0.95rem;
+        }
+
+        .ban-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #CBD5E1;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 8px;
+            border-radius: 6px;
+        }
+
+        .level-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FBBF24;
+            border: 1px solid #FBBF24;
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+            border: 1px solid #F87171;
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+            border: 1px solid #60A5FA;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-red-500"></span>
+                    <p class="text-red-400 font-bold uppercase tracking-widest text-sm">Quality Assurance</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    Ban المطعم <span class="text-gray-400">و Termination السائق</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">سياسات العقوبات وضمان جودة الخدمة</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left: Flowchart -->
+            <div class="flowchart-area">
+                <!-- Root -->
+                <div class="node node-start">
+                    <i class="fas fa-shield-alt node-icon"></i>
+                    <h4>مراقبة جودة الخدمة</h4>
+                    <p>Automated Quality Monitor</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Decision Point -->
+                <div class="node node-decision">
+                    <i class="fas fa-filter node-icon text-blue-300"></i>
+                    <h4>تصنيف المخالفة</h4>
+                    <p>تحديد المصدر والنوع</p>
+                </div>
+                <div class="connector-vertical"></div>
+                <!-- Branches Wrapper with Horizontal Bar -->
+                <div class="relative w-full" style="max-width: 850px;">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-gray-600"></div>
+                    <div class="branch-container">
+                        <!-- Branch 1: Driver -->
+                        <div class="branch">
+                            <div class="node node-driver mb-6">
+                                <i class="fas fa-motorcycle node-icon"></i>
+                                <h4>مخالفات السائق</h4>
+                                <p>تأخير / إلغاء / سلوك</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node" style="background: rgba(5, 150, 105, 0.1); border: 1px dashed #10B981;">
+                                <p class="text-green-400 font-bold">نظام النقاط (Strikes)</p>
+                                <p class="text-xs text-gray-400">3 إنذارات = إيقاف</p>
+                            </div>
+                        </div>
+                        <!-- Branch 2: Restaurant -->
+                        <div class="branch">
+                            <div class="node node-restaurant mb-6">
+                                <i class="fas fa-store node-icon"></i>
+                                <h4>مخالفات المطعم</h4>
+                                <p>رفض متكرر / تجاهل</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node" style="background: rgba(245, 158, 11, 0.1); border: 1px dashed #F59E0B;">
+                                <p class="text-orange-400 font-bold">الحظر التصاعدي</p>
+                                <p class="text-xs text-gray-400">Cool-down Timer</p>
+                            </div>
+                        </div>
+                        <!-- Branch 3: Critical -->
+                        <div class="branch">
+                            <div class="node node-danger mb-6">
+                                <i class="fas fa-exclamation-triangle node-icon"></i>
+                                <h4>مخالفات جسيمة</h4>
+                                <p>احتيال / سرقة / تلاعب</p>
+                            </div>
+                            <div class="connector-vertical"></div>
+                            <div class="node" style="background: rgba(239, 68, 68, 0.1); border: 1px dashed #EF4444;">
+                                <p class="text-red-400 font-bold">إنهاء فوري (Termination)</p>
+                                <p class="text-xs text-gray-400">Blacklist دائم</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Rules Panel -->
+            <div class="rules-area">
+                <!-- Restaurant Rules -->
+                <div class="rule-card" style="border-top: 3px solid #F59E0B;">
+                    <div class="rule-header">
+                        <i class="fas fa-store-slash text-orange-400 text-lg"></i>
+                        <h3 class="rule-title">سياسة حظر المطاعم (Restaurant Ban)</h3>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="ban-level">
+                            <span class="level-badge badge-warning">تنبيه</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">تجاهل الطلب (No Action)</p>
+                                <p class="text-xs text-gray-400">تحويل تلقائي إلى "مشغول" (Busy Mode)</p>
+                            </div>
+                        </div>
+                        <div class="ban-level">
+                            <span class="level-badge badge-danger">30 دقيقة</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">تكرار الرفض (High Reject Rate)</p>
+                                <p class="text-xs text-gray-400">عند رفض 3 طلبات متتالية</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Driver Rules -->
+                <div class="rule-card" style="border-top: 3px solid #10B981;">
+                    <div class="rule-header">
+                        <i class="fas fa-user-times text-green-400 text-lg"></i>
+                        <h3 class="rule-title">سياسة إنهاء السائقين (Termination)</h3>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="ban-level">
+                            <span class="level-badge badge-info">غرامة</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">إلغاء بعد القبول</p>
+                                <p class="text-xs text-gray-400">خصم قيمة التوصيل + إنذار (Strike)</p>
+                            </div>
+                        </div>
+                        <div class="ban-level">
+                            <span class="level-badge badge-warning">تعليق</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">تراكم الإنذارات</p>
+                                <p class="text-xs text-gray-400">3 إنذارات = إيقاف 3 أيام + إعادة تدريب</p>
+                            </div>
+                        </div>
+                        <div class="ban-level">
+                            <span class="level-badge badge-danger">إنهاء</span>
+                            <div>
+                                <p class="font-bold text-white text-xs">التقييم المنخفض / الاحتيال</p>
+                                <p class="text-xs text-gray-400">أقل من 4.2 نجوم أو تلاعب بالموقع</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>نظام آلي لضمان العدالة والشفافية في العقوبات</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-gavel text-red-400"></i>
+                <p>Fair Usage Policy Enforcement</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

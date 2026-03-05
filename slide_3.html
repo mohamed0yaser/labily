@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Why Now?</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+       /* *, *::before, *::after { box-sizing: border-box; } */
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 60px; }
+        h2 { font-size: 40px; }
+        .slide-container { font-size: 1.3em; }
+       /* @media (max-width: 1200px) {
+            .slide-container { padding: 8px; }
+            .core-system { margin: 0 8px; }
+            .app-card, .engine-box, .infra-badge { padding: 8px; font-size: 0.95em; }
+        }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; padding: 4px; }
+            .core-system { margin: 0 4px; }
+            .app-card, .engine-box, .infra-badge { padding: 6px; font-size: 0.9em; }
+            .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; padding: 2px; }
+            .core-system { margin: 0 2px; }
+            .app-card, .engine-box, .infra-badge { padding: 4px; font-size: 0.85em; }
+            .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .px-12 { padding-left: 4px !important; padding-right: 4px !important; }
+            .pt-8 { padding-top: 4px !important; }
+            .pb-4 { padding-bottom: 2px !important; }
+            .p-8 { padding: 4px !important; }
+            .mx-20 { margin-left: 2px !important; margin-right: 2px !important; }
+        }*/
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            /*flex-direction: column;*/
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-orange-dim: rgba(242, 140, 40, 0.2);
+            --text-light: #E2E8F0;
+        }
+
+        .text-accent {
+            color: #F28C28;
+        }
+
+        .bg-accent {
+            background-color: #F28C28;
+        }
+
+        /* SVG Background Pattern to avoid CSS Gradients */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Glassmorphism Cards without Gradients */
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-right: 4px solid rgba(242, 140, 40, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .highlight-card {
+            background-color: rgba(242, 140, 40, 0.1);
+            border: 1px solid #F28C28;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #F28C28;
+            font-size: 1.25rem;
+        }
+
+        .left-panel {
+            width: 35%;
+            background-color: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .right-panel {
+            width: 65%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .timeline-line {
+            position: absolute;
+            right: 31px;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Decorative Circle -->
+        <div
+            style="position: absolute; bottom: -150px; left: -150px; width: 500px; height: 500px; border-radius: 50%; background-color: rgba(242, 140, 40, 0.03); z-index: 1;">
+        </div>
+        <!-- Left Panel: Context & Heading -->
+        <div class="left-panel flex flex-col justify-center p-12">
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-12 h-1 bg-accent"></span>
+                    <p class="text-sm font-bold tracking-widest text-gray-400 uppercase">Strategic Timing</p>
+                </div>
+                <h1 class="text-6xl font-black text-white mb-4 leading-tight">
+                    لماذا <br />
+                    <span class="text-accent">الآن؟</span>
+                </h1>
+                <p class="text-xl text-gray-300 font-light leading-relaxed">
+                    تقاطع مثالي بين نضوج السوق، وتوفر التقنية، والحاجة الماسة لحلول مستدامة.
+                </p>
+            </div>
+            <div class="mt-8 p-6 rounded-lg border border-gray-700 bg-gray-900 bg-opacity-50">
+                <div class="text-5xl font-bold text-white mb-2">2026</div>
+                <p class="text-sm text-gray-400">نقطة تحول في اقتصاديات المنصات (Unit Economics) والتحول من النمو بأي
+                    ثمن إلى النمو المستدام.</p>
+            </div>
+            <div class="mt-auto pt-10">
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <i class="fas fa-info-circle"></i>
+                    <span>بيانات مبنية على تحليل السوق الخليجي Q4 2025</span>
+                </div>
+            </div>
+        </div>
+        <!-- Right Panel: Key Drivers -->
+        <div class="right-panel p-12 flex flex-col justify-center">
+            <div class="grid grid-cols-1 gap-5 relative">
+                <!-- Timeline Line Visual (Optional, visually connecting items) -->
+                <!-- <div class="timeline-line"></div> -->
+                <!-- Card 1 -->
+                <div class="glass-card p-4 flex items-start gap-4">
+                    <div class="icon-box flex-shrink-0">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">تسارع التحول الرقمي</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            نضوج سلوك المستهلكين في المنطقة واعتمادهم الكامل على خدمات "عند الطلب" كجزء أساسي من نمط
+                            الحياة اليومي.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-4 flex items-start gap-4">
+                    <div class="icon-box flex-shrink-0">
+                        <i class="fas fa-store-slash"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">فجوة في حلول المطاعم</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            حاجة المطاعم الصغيرة والمتوسطة الماسة لنظام اشتراكات مرن يقلل من استنزاف العمولات المرتفعة
+                            التقليدية.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-4 flex items-start gap-4">
+                    <div class="icon-box flex-shrink-0">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">فرصة التوسع الإقليمي</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            إمكانية الانطلاق من سوق منظم (الكويت) إلى أسواق ضخمة (مصر) ثم باقي دول الخليج بخطى ثابتة.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-4 flex items-start gap-4">
+                    <div class="icon-box flex-shrink-0">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">مرونة الهيكلية التقنية</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            توفر تقنيات تسمح ببناء Modular Monolith للإطلاق السريع مع قابلية سلسة للتحول إلى
+                            Microservices لاحقاً.
+                        </p>
+                    </div>
+                </div>
+                <!-- Card 5 (Highlighted) -->
+                <div class="glass-card highlight-card p-4 flex items-start gap-4">
+                    <div class="icon-box flex-shrink-0 bg-accent text-white">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">التوازن المالي والتشغيلي</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            التحول العالمي نحو نماذج الأعمال التي توازن بين سرعة النمو والانضباط المالي (Positive Unit
+                            Economics) منذ اليوم الأول.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

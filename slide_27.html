@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>User App Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+        }
+
+        /* SVG Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-element {
+            position: absolute;
+            border: 2px solid rgba(242, 140, 40, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(242, 140, 40, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3B82F6;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .list-item:nth-child(even) .icon-box {
+            background: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .tech-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            margin-top: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-element" style="width: 600px; height: 600px; top: -200px; right: -200px;"></div>
+        <div class="decorative-element"
+            style="width: 400px; height: 400px; bottom: -100px; left: -100px; border-color: rgba(59, 130, 246, 0.1);">
+        </div>
+        <!-- Main Content -->
+        <div class="flex flex-col w-full h-full p-12 relative z-10">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Customer Experience</p>
+                </div>
+                <h1 class="text-4xl font-black text-white leading-tight">
+                    تطبيق المستخدم: <span class="text-orange-400">نظرة عامة</span>
+                </h1>
+                <p class="text-lg text-gray-400 mt-2 max-w-4xl">
+                    تجربة استخدام سلسة تركز على السرعة، سهولة الوصول، والشفافية الكاملة في كل خطوة.
+                </p>
+            </div>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-2 gap-8 flex-1">
+                <!-- Left Column -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-user-check text-blue-400"></i>
+                        الوصول والاكتشاف
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-mobile-screen-button"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">تسجيل سلس ووضع الضيف</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                إمكانية تصفح القوائم بالكامل كـ "ضيف" دون تسجيل، مع تسجيل سريع عبر OTP عند الرغبة في
+                                إتمام الطلب لتقليل معدل الارتداد (Bounce Rate).
+                            </p>
+                            <span class="tech-badge">Guest Mode &amp; OTP</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">إدارة عناوين ذكية ومتعددة</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                حفظ عناوين متعددة (المنزل، العمل) بدقة GPS، مع فلترة تلقائية للمطاعم المتاحة بناءً على
+                                منطقة التوصيل المحددة لضمان القابلية للتنفيذ.
+                            </p>
+                            <span class="tech-badge">Geo-Fencing</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-magnifying-glass"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">تصفح وفلاتر متقدمة</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                بحث فوري حسب المدينة، المنطقة، أو نوع المطبخ، مع فلاتر ذكية للعروض والأكثر مبيعاً لزيادة
+                                معدل التحويل.
+                            </p>
+                            <span class="tech-badge">Smart Search</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-receipt text-orange-400"></i>
+                        الطلب والدفع
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-basket-shopping"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">السلة والدفع المرن</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                تجربة سلة شراء واضحة مع دعم الدفع النقدي (Cash) واستخدام رصيد المحفظة (Refund Wallet)
+                                لتعويضات الإلغاء، لتقليل مخاطر المدفوعات الإلكترونية في البداية.
+                            </p>
+                            <span class="tech-badge">Cash + Wallet Refund</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-satellite-dish"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">تتبع لحظي (Realtime Tracking)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                مراقبة حالة الطلب وموقع السائق خطوة بخطوة عبر Firebase Realtime، مما يمنح المستخدم
+                                طمأنينة ويقلل من استفسارات الدعم الفني.
+                            </p>
+                            <span class="tech-badge">Firebase Realtime</span>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-auto p-4 bg-white bg-opacity-5 rounded-lg border border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-500 bg-opacity-20 flex items-center justify-center text-blue-400">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">نقاط الولاء</p>
+                                <p class="text-xs text-gray-400">كسب نقاط مع كل طلب</p>
+                            </div>
+                        </div>
+                        <div class="h-8 w-px bg-gray-600"></div>
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-orange-500 bg-opacity-20 flex items-center justify-center text-orange-400">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">إشعارات ذكية</p>
+                                <p class="text-xs text-gray-400">تحديثات فورية للحالة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="flex justify-between items-center pt-6 mt-2 border-t border-gray-700 text-xs text-gray-500">
+                <p>User Application Overview</p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-gray-800 rounded">iOS &amp; Android</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">SPA</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">UX Focused</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

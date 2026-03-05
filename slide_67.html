@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Budget Justification</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+        }
+
+        /* SVG Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-element {
+            position: absolute;
+            border: 2px solid rgba(242, 140, 40, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(242, 140, 40, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3B82F6;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .list-item:nth-child(even) .icon-box {
+            background: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .tech-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            margin-top: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-element" style="width: 600px; height: 600px; top: -200px; right: -200px;"></div>
+        <div class="decorative-element"
+            style="width: 400px; height: 400px; bottom: -100px; left: -100px; border-color: rgba(59, 130, 246, 0.1);">
+        </div>
+        <!-- Main Content -->
+        <div class="flex flex-col w-full h-full p-12 relative z-10">
+            <!-- Header -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Budget &amp; ROI Analysis</p>
+                </div>
+                <h1 class="text-4xl font-black text-white leading-tight">
+                    توضيح الفروقات <span class="text-orange-400">ومبررات التكلفة</span>
+                </h1>
+                <p class="text-lg text-gray-400 mt-2 max-w-4xl">
+                    تحليل القيمة المضافة: لماذا الاستثمار في النسخة المتقدمة يوفر التكاليف التشغيلية على المدى الطويل.
+                </p>
+            </div>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-2 gap-8 flex-1">
+                <!-- Left Column: Technical Depth -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-microchip text-blue-400"></i>
+                        العمق التقني والذكاء (Technical Depth)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">مستوى الأتمتة والذكاء</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                الفارق يكمن في الخوارزميات؛ النسخ المتقدمة تستخدم تعلم الآلة (ML) للتنبؤ بالطلب وتوزيع
+                                السائقين، بينما تعتمد النسخ الأساسية على قواعد ثابتة وبسيطة.
+                            </p>
+                            <span class="tech-badge">AI vs Rule-based</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">البنية التحتية وقابلية التوسع</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                الاستثمار الأعلى يضمن بنية High Availability (HA) مع توزيع أحمال وتكرار لقواعد البيانات،
+                                مما يمنع التوقف أثناء الحملات التسويقية والذروة.
+                            </p>
+                            <span class="tech-badge">AWS HA Architecture</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">المرونة المعمارية (Microservices Ready)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                بناء النظام كـ Modular Monolith صارم يسهل فصل الخدمات مستقبلاً دون الحاجة لإعادة كتابة
+                                الكود بالكامل، مما يوفر تكاليف تطوير ضخمة لاحقاً.
+                            </p>
+                            <span class="tech-badge">Future Proofing</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column: Business Impact -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-gray-700 pb-3 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-orange-400"></i>
+                        العائد الاستثماري (Business Impact)
+                    </h3>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">كفاءة التشغيل (OPEX Reduction)</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                الأتمتة المتقدمة في معالجة الاستثناءات والتسويات تقلل الحاجة للتدخل البشري بنسبة تصل إلى
+                                40%، مما يخفض تكاليف فريق الدعم والعمليات.
+                            </p>
+                            <span class="tech-badge">Lower Operational Cost</span>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="icon-box">
+                            <i class="fas fa-globe-africa"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">جاهزية التوسع الدولي</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed mt-1">
+                                دعم تعدد العملات والمناطق الزمنية واللغات في النواة (Core) يسرع دخول أسواق جديدة (مثل
+                                مصر والخليج) دون تأخير تقني.
+                            </p>
+                            <span class="tech-badge">Go-to-Market Speed</span>
+                        </div>
+                    </div>
+                    <!-- Stats Footer in Right Column -->
+                    <div
+                        class="mt-auto p-4 bg-white bg-opacity-5 rounded-lg border border-gray-700 flex items-center justify-between gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-400">Basic</div>
+                            <p class="text-xs text-gray-300">تدخل بشري مرتفع</p>
+                        </div>
+                        <div class="h-8 w-px bg-gray-600"></div>
+                        <div class="text-center flex-1">
+                            <p class="text-xs text-gray-400 mb-1">توفير تكاليف التشغيل</p>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-orange-500 h-2 rounded-full"
+                                    style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="h-8 w-px bg-gray-600"></div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-orange-400">Ent.</div>
+                            <p class="text-xs text-gray-300">أتمتة عالية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer Info -->
+            <div class="flex justify-between items-center pt-6 mt-2 border-t border-gray-700 text-xs text-gray-500">
+                <p>Cost Justification &amp; ROI Analysis</p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-gray-800 rounded">OPEX vs CAPEX</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">Scalability</span>
+                    <span class="px-2 py-1 bg-gray-800 rounded">Automation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

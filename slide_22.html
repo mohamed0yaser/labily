@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Detailed Calculation Example - Part 2</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background-color: rgba(242, 140, 40, 0.03);
+            border-radius: 50%;
+            top: -200px;
+            right: -100px;
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        /* Calculation Container */
+        .calc-container {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 20px;
+            height: 100%;
+            padding: 0 40px 40px 40px;
+            z-index: 10;
+        }
+
+        /* Calculation Card */
+        .calc-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .calc-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        /* Card Headers */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .step-badge {
+            background-color: #0B1F3B;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94A3B8;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        /* Highlight Colors */
+        .highlight-blue {
+            color: #3B82F6;
+        }
+
+        .highlight-orange {
+            color: #F28C28;
+        }
+
+        .highlight-green {
+            color: #10B981;
+        }
+
+        .highlight-red {
+            color: #EF4444;
+        }
+
+        .highlight-purple {
+            color: #A855F7;
+        }
+
+        /* Calculation Rows */
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #CBD5E1;
+        }
+
+        .calc-row.total-row {
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #FFFFFF;
+        }
+
+        .calc-value {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Operator Icons between cards */
+        .operator-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.5rem;
+            width: 30px;
+        }
+
+        /* Driver Section (Separate) */
+        .driver-section {
+            margin-top: 15px;
+            background: linear-gradient(90deg, rgba(168, 85, 247, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Specific Card Borders */
+        .border-blue-top {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .border-orange-top {
+            border-top: 4px solid #F28C28;
+        }
+
+        .border-green-top {
+            border-top: 4px solid #10B981;
+        }
+
+        .currency {
+            font-size: 0.7em;
+            opacity: 0.7;
+            margin-right: 4px;
+        }
+
+        .note-text {
+            font-size: 0.7rem;
+            color: #64748B;
+            margin-top: 8px;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        /* Logic Box */
+        .logic-box {
+            background: rgba(242, 140, 40, 0.1);
+            border-left: 3px solid #F28C28;
+            padding: 8px 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        .logic-title {
+            color: #F28C28;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .logic-desc {
+            color: #CBD5E1;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-glow"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-2 z-10 flex justify-between items-end mb-4">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Advanced Unit Economics</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    مثال حسابي مفصل <span class="text-gray-400">- الجزء الثاني</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">سيناريوهات: وقت الذروة (Peak Time) + عروض خصم (Promo Code)</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 px-12 pb-8 z-10 flex flex-col justify-center">
+            <!-- Flow Cards -->
+            <div class="flex flex-1 gap-4 items-stretch mb-4 max-h-96">
+                <!-- Step 1: Order Base (Promo Scenario) -->
+                <div class="calc-card border-blue-top">
+                    <div class="card-header">
+                        <div class="step-badge">1</div>
+                        <div class="flex-1">
+                            <h3 class="card-title text-blue-400">تطبيق الخصم</h3>
+                            <p class="text-xs text-gray-400">سيناريو: خصم ممول من المطعم</p>
+                        </div>
+                        <i class="fas fa-percent text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="calc-row">
+                        <p>سعر الأصناف</p>
+                        <p class="calc-value">8.000 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row text-red-400">
+                        <p>كود خصم (Promo)</p>
+                        <p class="calc-value">- 1.000 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row total-row">
+                        <p>صافي الأصناف</p>
+                        <p class="calc-value text-blue-400">7.000 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="logic-box">
+                        <p class="logic-title">منطق العمولة</p>
+                        <p class="logic-desc">إذا كان الخصم من المطعم، تُحسب العمولة على "الصافي" (7.000).</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="operator-arrow">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <!-- Step 2: Platform Commission & Profit -->
+                <div class="calc-card border-orange-top">
+                    <div class="card-header">
+                        <div class="step-badge">2</div>
+                        <div class="flex-1">
+                            <h3 class="card-title text-orange-400">دخل المنصة</h3>
+                            <p class="text-xs text-gray-400">العمولة + اشتراك التوصيل</p>
+                        </div>
+                        <i class="fas fa-chart-pie text-orange-500 text-xl"></i>
+                    </div>
+                    <div class="calc-row">
+                        <p>العمولة (12% من 7.000)</p>
+                        <p class="calc-value">0.840 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row">
+                        <p>تخصيص اشتراك (تقديري)</p>
+                        <p class="calc-value text-gray-500">+ 0.050 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row total-row">
+                        <p>إجمالي ربح الطلب</p>
+                        <p class="calc-value text-orange-400">0.890 <span class="currency">KWD</span></p>
+                    </div>
+                    <p class="note-text text-center mt-2">
+                        *في حال خصم ممول من المنصة، تُحسب العمولة على 8.000 وتتحمل المنصة الـ 1.000
+                    </p>
+                </div>
+                <!-- Arrow -->
+                <div class="operator-arrow">
+                    <i class="fas fa-equals"></i>
+                </div>
+                <!-- Step 3: Restaurant Net -->
+                <div class="calc-card border-green-top">
+                    <div class="card-header">
+                        <div class="step-badge">3</div>
+                        <div class="flex-1">
+                            <h3 class="card-title text-green-400">صافي المطعم</h3>
+                            <p class="text-xs text-gray-400">بعد الخصم والعمولة</p>
+                        </div>
+                        <i class="fas fa-file-invoice-dollar text-green-500 text-xl"></i>
+                    </div>
+                    <div class="calc-row">
+                        <p>صافي المبيعات</p>
+                        <p class="calc-value">7.000 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row text-red-400">
+                        <p>يخصم: عمولة المنصة</p>
+                        <p class="calc-value">- 0.840 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="calc-row total-row">
+                        <p>التحويل النهائي</p>
+                        <p class="calc-value text-green-400">6.160 <span class="currency">KWD</span></p>
+                    </div>
+                    <p class="note-text">*يتم إيداع المبلغ في المحفظة للتسوية الأسبوعية</p>
+                </div>
+            </div>
+            <!-- Driver Section (Peak Time Logic) -->
+            <div class="driver-section">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white border-2 border-purple-500">
+                        <i class="fas fa-bolt text-purple-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg">توصيل وقت الذروة (Peak Time)</h4>
+                        <p class="text-xs text-gray-300">زيادة الطلب = زيادة في أجر السائق</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-8 flex-1 justify-end">
+                    <div class="text-center">
+                        <p class="text-xs text-gray-400 mb-1">سعر التوصيل الأساسي</p>
+                        <p class="font-bold text-lg text-white">1.200 <span class="currency">KWD</span></p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="fas fa-plus text-gray-500 text-xs"></i>
+                    </div>
+                    <div
+                        class="text-center bg-purple-900 bg-opacity-40 px-3 py-1 rounded border border-purple-500 border-opacity-30">
+                        <p class="text-xs text-purple-300 mb-1">حافز الذروة (Surge)</p>
+                        <p class="font-bold text-lg text-purple-400">0.200 <span class="currency">KWD</span></p>
+                    </div>
+                    <i class="fas fa-arrow-left text-gray-500"></i>
+                    <div class="text-center">
+                        <p class="text-xs text-gray-400 mb-1">إجمالي دخل السائق</p>
+                        <p class="font-bold text-2xl text-green-400">1.400 <span class="currency">KWD</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center">
+            <p class="text-xs text-gray-500">Note: Peak surcharges are fully passed to drivers to ensure high
+                availability (High SLA).</p>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="fas fa-coins"></i>
+                <span>Dynamic Pricing Engine</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

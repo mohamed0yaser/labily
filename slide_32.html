@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Loyalty &amp; Wallet System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Layout */
+        .content-wrapper {
+            flex: 1;
+            padding: 20px 60px 30px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        /* Top Section: Flow */
+        .flow-section {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Connecting Line */
+        .flow-line {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            width: 180px;
+        }
+
+        .step-icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .step-item:hover .step-icon-circle {
+            transform: scale(1.1);
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #F28C28;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            line-height: 1.3;
+        }
+
+        /* Bottom Section: Split */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .detail-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .info-icon {
+            margin-top: 4px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .info-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin-bottom: 2px;
+        }
+
+        .info-content p {
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        /* Specific Styles */
+        .step-1 .step-icon-circle {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        /* Order */
+        .step-2 .step-icon-circle {
+            border-color: #EC4899;
+            color: #EC4899;
+        }
+
+        /* Points */
+        .step-3 .step-icon-circle {
+            border-color: #F28C28;
+            color: #F28C28;
+        }
+
+        /* Convert */
+        .step-4 .step-icon-circle {
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        /* Redeem */
+
+        .wallet-card {
+            border-top: 4px solid #10B981;
+        }
+
+        .rules-card {
+            border-top: 4px solid #EC4899;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-pink-500"></span>
+                    <p class="text-pink-400 font-bold uppercase tracking-widest text-sm">Customer Retention</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    Loyalty Points <span class="text-gray-400">والمحفظة</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">نظام مكافآت متكامل لزيادة القيمة الدائمة للعميل (LTV)</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Top: Loyalty Flow -->
+            <div class="flow-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-sync text-pink-400 ml-2"></i>دورة حياة
+                        نقاط الولاء</h2>
+                    <span class="text-xs bg-gray-700 text-gray-300 px-3 py-1 rounded-full">Automated Engine</span>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-line"></div>
+                    <!-- Step 1 -->
+                    <div class="step-item step-1">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-shopping-basket"></i>
+                        </div>
+                        <h3 class="step-title">إتمام الطلب</h3>
+                        <p class="step-desc">يقوم العميل بإتمام طلب ناجح من مطعم مشارك.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="step-item step-2">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 class="step-title">اكتساب النقاط</h3>
+                        <p class="step-desc">احتساب النقاط تلقائياً بناءً على صافي قيمة الطلب (Configurable %).</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="step-item step-3">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <h3 class="step-title">تحويل لقسيمة</h3>
+                        <p class="step-desc">عند بلوغ الحد الأدنى، يحول العميل النقاط إلى قسيمة خصم (Voucher).</p>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="step-item step-4">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="step-title">استخدام الخصم</h3>
+                        <p class="step-desc">يتم خصم قيمة القسيمة من الطلب القادم تلقائياً أو يدوياً.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom: Details Grid -->
+            <div class="details-grid">
+                <!-- Left: Wallet System -->
+                <div class="detail-card wallet-card">
+                    <div class="card-header">
+                        <div
+                            class="w-10 h-10 rounded bg-green-900/30 flex items-center justify-center text-green-400 text-xl">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <h3>نظام المحفظة (Wallet Logic)</h3>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <div class="info-icon text-green-400"><i class="fas fa-undo-alt"></i></div>
+                            <div class="info-content">
+                                <h4>الاسترداد فقط (Refund Only)</h4>
+                                <p>المحفظة مصممة لاستقبال المبالغ المستردة من الطلبات الملغاة لضمان بقاء السيولة داخل
+                                    المنصة.</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-green-400"><i class="fas fa-shield-alt"></i></div>
+                            <div class="info-content">
+                                <h4>Closed Loop System</h4>
+                                <p>لا يمكن شحن المحفظة ببطاقة بنكية (في المرحلة الحالية MVP) لتقليل التعقيدات المالية.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-green-400"><i class="fas fa-bolt"></i></div>
+                            <div class="info-content">
+                                <h4>استخدام تلقائي</h4>
+                                <p>يتم خصم رصيد المحفظة تلقائياً كأولوية أولى عند الدفع للطلبات الجديدة.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Right: Rules & Config -->
+                <div class="detail-card rules-card">
+                    <div class="card-header">
+                        <div
+                            class="w-10 h-10 rounded bg-pink-900/30 flex items-center justify-center text-pink-400 text-xl">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>قواعد ونطاق النقاط</h3>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <div class="info-icon text-pink-400"><i class="fas fa-store"></i></div>
+                            <div class="info-content">
+                                <h4>نطاق النقاط (Scope)</h4>
+                                <p>يمكن أن تكون النقاط خاصة بمطعم معين (لزيادة ولاء العلامة التجارية) أو عامة للمنصة.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-pink-400"><i class="fas fa-hourglass-half"></i></div>
+                            <div class="info-content">
+                                <h4>الصلاحية (Expiration)</h4>
+                                <p>تحديد مدة صلاحية للنقاط (مثلاً 90 يوم) لتحفيز المستخدمين على العودة السريعة.</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-pink-400"><i class="fas fa-calculator"></i></div>
+                            <div class="info-content">
+                                <h4>معادلة التحويل</h4>
+                                <p>مثال: 1 دينار = 10 نقاط | 100 نقطة = قسيمة بقيمة 1 دينار (تُضبط من لوحة التحكم).</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Engagement &amp; Financial Loop Strategy</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-chart-line text-blue-400"></i>
+                <p>Increases Retention by up to 30%</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

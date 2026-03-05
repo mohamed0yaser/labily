@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Restaurant Net Profit Calculation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Glass Panel Styling */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-orange);
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .revenue-stream-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .revenue-stream-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .formula-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed #3B82F6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Restaurant Financial Model</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    احتساب صافي <span class="text-blue-400">أرباح المطعم</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">آلية احتساب العوائد والاستقطاعات بدقة</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 px-12 py-8 grid grid-cols-12 gap-8 z-10">
+            <!-- Left Column: Calculation Logic (5 Columns) -->
+            <div class="col-span-5 flex flex-col gap-6">
+                <div class="glass-panel p-1 flex-1 flex flex-col">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-calculator text-blue-400"></i>
+                            منطق الاستقطاع المالي
+                        </h3>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <!-- Step 1 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-green-500 bg-opacity-20 text-green-400">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">1. إجمالي قيمة الأصناف</p>
+                                <p class="text-gray-400 text-xs">سعر البيع الأساسي قبل أي خصم (Menu Price)</p>
+                            </div>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-red-500 bg-opacity-20 text-red-400">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">2. طرح الخصومات</p>
+                                <p class="text-gray-400 text-xs">الخصومات التي يتحملها المطعم تُخصم أولاً</p>
+                            </div>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-blue-500 bg-opacity-20 text-blue-400">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">3. احتساب العمولة</p>
+                                <p class="text-gray-400 text-xs">تطبق النسبة (مثل 12%) على "صافي القيمة بعد الخصم"</p>
+                            </div>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-gray-500 bg-opacity-20 text-gray-400">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">4. استبعاد التوصيل</p>
+                                <p class="text-gray-400 text-xs">رسوم التوصيل تذهب للسائق مباشرة ولا تدخل في حسبة المطعم
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Formula Box -->
+                <div class="formula-box">
+                    <p class="text-sm text-blue-300 uppercase tracking-widest mb-2 font-bold">المعادلة النهائية للتسوية
+                    </p>
+                    <div class="flex flex-col items-center justify-center gap-1 text-lg font-bold">
+                        <div class="flex items-center gap-2">
+                            <span class="text-white">صافي المستحق</span>
+                            <i class="fas fa-equals text-gray-500 text-sm"></i>
+                            <span class="text-green-400">(قيمة الطلب - خصم المطعم)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-minus text-red-400"></i>
+                            <span class="text-red-300">(عمولة المنصة + رسوم الدفع الإلكتروني)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column: Visuals & KPIs (7 Columns) -->
+            <div class="col-span-7 flex flex-col gap-6">
+                <!-- Top Row: KPI Cards -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="kpi-card border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Net Margin</p>
+                            <i class="fas fa-wallet text-blue-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">~85%</p>
+                        <p class="text-xs text-blue-300 mt-1">من قيمة الطلب الصافية</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-green-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Payout Cycle</p>
+                            <i class="fas fa-calendar-check text-green-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">أسبوعي</p>
+                        <p class="text-xs text-green-300 mt-1">تسوية آلية كل خميس</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-orange-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Transparency</p>
+                            <i class="fas fa-search-dollar text-orange-500"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-white">100%</p>
+                        <p class="text-xs text-orange-300 mt-1">لوحة تحكم لحظية</p>
+                    </div>
+                </div>
+                <!-- Bottom Row: Charts -->
+                <div class="glass-panel p-6 flex-1 grid grid-cols-2 gap-6">
+                    <!-- Chart 1: Money Flow Waterfall -->
+                    <div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-gray-300 mb-4 text-center">تدفق الأموال للطلب الواحد (مثال 10
+                            د.ك)</p>
+                        <div class="relative w-full h-48">
+                            <canvas id="moneyFlowChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400 text-center">
+                            <p>العمولة لا تُحتسب على المبلغ المخصوم</p>
+                        </div>
+                    </div>
+                    <!-- Chart 2: Profit Comparison -->
+                    <div class="flex flex-col items-center">
+                        <p class="text-sm font-bold text-gray-300 mb-4 text-center">تأثير العروض على صافي الربح</p>
+                        <div class="relative w-full h-48">
+                            <canvas id="profitComparisonChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400 text-center">
+                            <p>زيادة الحجم تعوض انخفاض الهامش في العروض</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Chart 1: Money Flow (Doughnut/Pie Breakdown)
+        const ctx1 = document.getElementById('moneyFlowChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['صافي للمطعم', 'عمولة المنصة', 'خصومات'],
+                datasets: [{
+                    data: [8.5, 1.2, 0.3], // Example breakdown
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)', // Net Profit (Green)
+                        'rgba(59, 130, 246, 0.6)',  // Commission (Blue)
+                        'rgba(239, 68, 68, 0.5)'    // Discounts (Red)
+                    ],
+                    borderColor: '#0B1F3B',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { family: 'Cairo', size: 10 }, boxWidth: 10 }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Chart 2: Profit Comparison (Bar Chart)
+        const ctx2 = document.getElementById('profitComparisonChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['طلب عادي', 'طلب مع عرض'],
+                datasets: [
+                    {
+                        label: 'صافي ربح المطعم',
+                        data: [8.8, 7.5], // Regular vs Promo
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)'
+                    },
+                    {
+                        label: 'عمولة المنصة',
+                        data: [1.2, 1.0], // Commission drops with discount
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { family: 'Cairo', size: 10 }, boxWidth: 10 }
+                    }
+                },
+                scales: {
+                    x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { display: false } },
+                    y: { stacked: true, ticks: { display: false }, grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Risk Matrix &amp; Edge Cases</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Introduction Box */
+        .intro-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 4px solid #EF4444;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .risk-legend {
+            display: flex;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Grid Layout */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+
+        /* Risk Card */
+        .risk-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-card:hover {
+            transform: translateY(-3px);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Severity Strip */
+        .severity-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .sev-high {
+            background-color: #EF4444;
+        }
+
+        .sev-med {
+            background-color: #F59E0B;
+        }
+
+        .sev-low {
+            background-color: #3B82F6;
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .risk-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .risk-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .risk-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tag-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #FCA5A5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .tag-med {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FDE68A;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .tag-low {
+            background: rgba(59, 130, 246, 0.2);
+            color: #BFDBFE;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Card Body */
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .problem-text {
+            font-size: 0.85rem;
+            color: #CBD5E1;
+            line-height: 1.4;
+            min-height: 2.8em;
+        }
+
+        /* Mitigation Section */
+        .mitigation-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: auto;
+        }
+
+        .mitigation-header {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mitigation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .mitigation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #E2E8F0;
+        }
+
+        .check-bullet {
+            color: #10B981;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        /* Specific Colors */
+        .icon-high {
+            color: #EF4444;
+        }
+
+        .icon-med {
+            color: #F59E0B;
+        }
+
+        .icon-low {
+            color: #3B82F6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-red-500"></span>
+                    <p class="text-red-400 font-bold uppercase tracking-widest text-sm">Risk Management</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    المخاطر <span class="text-gray-400">والحالات الحديّة (Edge Cases)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Proactive Mitigation Strategies</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Intro & Legend -->
+            <div class="intro-box">
+                <p class="text-gray-300 text-sm m-0">
+                    تحليل شامل لأبرز المخاطر التشغيلية والتقنية مع آليات معالجة فورية لضمان استمرارية الخدمة.
+                </p>
+                <div class="risk-legend">
+                    <div class="legend-item"><span class="legend-dot bg-red-500"></span> High Criticality</div>
+                    <div class="legend-item"><span class="legend-dot bg-yellow-500"></span> Medium Impact</div>
+                    <div class="legend-item"><span class="legend-dot bg-blue-500"></span> Operational</div>
+                </div>
+            </div>
+            <!-- Risk Matrix Grid -->
+            <div class="risk-grid">
+                <!-- 1. Peak Load (High) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-high"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-high"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="risk-title">ضغط وقت الذروة<br /><span
+                                    class="text-xs text-gray-400 font-normal">Peak Load</span></div>
+                        </div>
+                        <span class="risk-tag tag-high">Critical</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">زيادة مفاجئة في الطلبات تتجاوز قدرة السائقين المتوفرين، مما يؤدي لتأخير
+                            التوصيل.</p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>تفعيل التسعير الديناميكي (Surge) لتقليل الطلب.</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>تضييق نطاق التوصيل للمطاعم تلقائياً.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 2. Frequent Rejections (High) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-high"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-high"><i class="fas fa-user-times"></i></div>
+                            <div class="risk-title">رفض متكرر للطلبات<br /><span
+                                    class="text-xs text-gray-400 font-normal">Rejection Loop</span></div>
+                        </div>
+                        <span class="risk-tag tag-high">Critical</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">رفض السائقين أو المطاعم للطلبات بشكل متكرر مما يسبب تجربة سيئة وإلغاء.
+                        </p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>نظام عقوبات تصاعدي (Timeout/Ban).</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>توسيع دائرة البحث عن سائقين تلقائياً.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3. Payment Issues (Medium) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-med"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-med"><i class="fas fa-credit-card"></i></div>
+                            <div class="risk-title">فشل الدفع الإلكتروني<br /><span
+                                    class="text-xs text-gray-400 font-normal">Payment Failure</span></div>
+                        </div>
+                        <span class="risk-tag tag-med">Medium</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">فشل عملية الخصم من البطاقة أو المحفظة أثناء تأكيد الطلب.</p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>إمكانية التحويل الفوري للدفع "كاش".</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>إعادة المحاولة التلقائية (Auto-Retry Logic).</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 4. Connectivity Loss (Medium) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-med"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-med"><i class="fas fa-wifi"></i></div>
+                            <div class="risk-title">انقطاع الاتصال<br /><span
+                                    class="text-xs text-gray-400 font-normal">Network Loss</span></div>
+                        </div>
+                        <span class="risk-tag tag-med">Medium</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">فقدان اتصال السائق بالإنترنت أثناء توصيل طلب نشط.</p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>تخزين محلي (Local Storage Sync) وإرسال لاحق.</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>رسائل SMS للطوارئ تحتوي تفاصيل الطلب.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 5. Driver Saturation (Low) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-low"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-low"><i class="fas fa-users"></i></div>
+                            <div class="risk-title">ازدحام السائقين<br /><span
+                                    class="text-xs text-gray-400 font-normal">Saturation</span></div>
+                        </div>
+                        <span class="risk-tag tag-low">Operational</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">تكدس السائقين في منطقة واحدة ونقصهم في أخرى.</p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>خرائط حرارية (Heatmaps) لتوجيه السائقين.</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>حوافز مناطق النقص (Zone Boost).</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 6. Location Errors (Low) -->
+                <div class="risk-card">
+                    <div class="severity-strip sev-low"></div>
+                    <div class="card-header">
+                        <div class="header-content">
+                            <div class="risk-icon icon-low"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="risk-title">أخطاء الموقع<br /><span
+                                    class="text-xs text-gray-400 font-normal">GPS Drift</span></div>
+                        </div>
+                        <span class="risk-tag tag-low">Operational</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="problem-text">عدم دقة موقع العميل أو السائق مما يسبب صعوبة في الوصول.</p>
+                        <div class="mitigation-box">
+                            <div class="mitigation-header"><i class="fas fa-shield-alt"></i> الحل (Mitigation):</div>
+                            <ul class="mitigation-list">
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>التحقق من العناوين عبر Google Places API.</p>
+                                </li>
+                                <li class="mitigation-item"><i class="fas fa-check check-bullet"></i>
+                                    <p>إخفاء الأرقام (Call Masking) للتواصل الآمن.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Risk Analysis &amp; Business Continuity Plan</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-double text-green-500"></i>
+                <p>Resilient Architecture Design</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

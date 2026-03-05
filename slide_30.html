@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Cart, Order and Payment Flow</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Flow Container */
+        .flow-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 60px;
+            z-index: 10;
+            gap: 40px;
+        }
+
+        /* Steps Row */
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        /* Connecting Line Background */
+        .connecting-line {
+            position: absolute;
+            top: 60px;
+            /* Center of the circle icon */
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        /* Step Card */
+        .step-card {
+            position: relative;
+            z-index: 10;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Step Icon Circle */
+        .step-icon-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            /* Match bg to hide line behind */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            border: 2px solid;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Step Content */
+        .step-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-number {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            background-color: #FFFFFF;
+            color: #0B1F3B;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        .actor-badge {
+            margin-top: auto;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        /* Specific Colors - Solid Colors instead of Gradients */
+        /* Step 1: Cart - Blue */
+        .step-1 .step-icon-wrapper {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .step-1 .step-icon {
+            background-color: #1E40AF;
+        }
+
+        .step-1 .actor-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+
+        /* Step 2: Promo - Purple */
+        .step-2 .step-icon-wrapper {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .step-2 .step-icon {
+            background-color: #7C3AED;
+        }
+
+        .step-2 .actor-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #A78BFA;
+        }
+
+        /* Step 3: Payment - Orange */
+        .step-3 .step-icon-wrapper {
+            border-color: rgba(242, 140, 40, 0.3);
+        }
+
+        .step-3 .step-icon {
+            background-color: #EA580C;
+        }
+
+        .step-3 .actor-badge {
+            background: rgba(242, 140, 40, 0.2);
+            color: #FDBA74;
+        }
+
+        /* Step 4: Review - Green */
+        .step-4 .step-icon-wrapper {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .step-4 .step-icon {
+            background-color: #059669;
+        }
+
+        .step-4 .actor-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6EE7B7;
+        }
+
+        /* Step 5: Order - Teal */
+        .step-5 .step-icon-wrapper {
+            border-color: rgba(20, 184, 166, 0.3);
+        }
+
+        .step-5 .step-icon {
+            background-color: #0D9488;
+        }
+
+        .step-5 .actor-badge {
+            background: rgba(20, 184, 166, 0.2);
+            color: #5EEAD4;
+        }
+
+        /* Bottom Status Bar */
+        .system-events {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #64748B;
+        }
+
+        .event-item.active .event-dot {
+            background-color: #10B981;
+            box-shadow: 0 0 10px #10B981;
+        }
+
+        .event-item.active {
+            color: #CBD5E1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Purchase Workflow</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    السلة والطلب والدفع <span class="text-gray-400">Checkout Flow</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">عملية الشراء من الإضافة للسلة حتى التأكيد النهائي</p>
+            </div>
+        </div>
+        <!-- Flow Content -->
+        <div class="flow-wrapper">
+            <div class="steps-container">
+                <div class="connecting-line"></div>
+                <!-- Step 1: Add to Cart -->
+                <div class="step-card step-1">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-cart-plus"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">إدارة السلة</h3>
+                        <p class="step-desc">إضافة الأصناف، تعديل الكميات، وإضافة ملاحظات خاصة لكل صنف.</p>
+                        <span class="actor-badge">User Action</span>
+                    </div>
+                </div>
+                <!-- Step 2: Promo & Discounts -->
+                <div class="step-card step-2">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">الخصومات</h3>
+                        <p class="step-desc">تطبيق كوبونات (Promo Codes) أو الاستفادة من العروض التلقائية.</p>
+                        <span class="actor-badge">System Logic</span>
+                    </div>
+                </div>
+                <!-- Step 3: Payment -->
+                <div class="step-card step-3">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">اختيار الدفع</h3>
+                        <p class="step-desc">الدفع نقداً عند الاستلام أو استخدام رصيد المحفظة المسترد (Refund Wallet).
+                        </p>
+                        <span class="actor-badge">Secure Payment</span>
+                    </div>
+                </div>
+                <!-- Step 4: Review -->
+                <div class="step-card step-4">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">التأكيد</h3>
+                        <p class="step-desc">مراجعة العنوان، التفاصيل المالية، والرسوم النهائية قبل الإرسال.</p>
+                        <span class="actor-badge">Final Review</span>
+                    </div>
+                </div>
+                <!-- Step 5: Order Creation -->
+                <div class="step-card step-5">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">إنشاء الطلب</h3>
+                        <p class="step-desc">توليد رقم الطلب، حجز المخزون (إن وجد)، وإشعار المطعم فورياً.</p>
+                        <span class="actor-badge">Order Generated</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Technical Underlay -->
+            <div class="system-events">
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Stock Validation</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Coupon Verification Logic</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Geofencing Check</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Wallet Balance Check</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Firebase Trigger</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>User App - Checkout Module</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                <p>Seamless User Experience Flow</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

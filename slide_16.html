@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Revenue Streams</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background-color: rgba(59, 130, 246, 0.05);
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background-color: rgba(242, 140, 40, 0.05);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Layout */
+        .content-wrapper {
+            display: flex;
+            height: 100%;
+            padding: 0 48px 32px 48px;
+            gap: 32px;
+            z-index: 10;
+        }
+
+        /* Sidebar (Chart) */
+        .chart-panel {
+            flex: 0 0 30%;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Grid (Cards) */
+        .cards-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Revenue Card */
+        .revenue-card {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            overflow: hidden;
+        }
+
+        .revenue-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .percentage-pill {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Specific Card Styles */
+        .card-commission {
+            border-top: 4px solid #10B981;
+        }
+
+        .card-commission .card-icon-wrapper {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+
+        .card-commission .percentage-pill {
+            color: #10B981;
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .card-subscription {
+            border-top: 4px solid #F28C28;
+        }
+
+        .card-subscription .card-icon-wrapper {
+            background-color: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .card-subscription .percentage-pill {
+            color: #F28C28;
+            background-color: rgba(242, 140, 40, 0.1);
+        }
+
+        .card-fees {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .card-fees .card-icon-wrapper {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .card-fees .percentage-pill {
+            color: #3B82F6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .card-ads {
+            border-top: 4px solid #8B5CF6;
+        }
+
+        .card-ads .card-icon-wrapper {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: #8B5CF6;
+        }
+
+        .card-ads .percentage-pill {
+            color: #8B5CF6;
+            background-color: rgba(139, 92, 246, 0.1);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+        }
+
+        .total-revenue-label {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800 mb-4">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Business Model</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    مصادر <span class="text-gray-300">الدخل المتعددة</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">التدفقات المالية للنموذج الربحي المستدام</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Sidebar: Chart & Summary -->
+            <div class="chart-panel">
+                <h3 class="text-xl font-bold text-white mb-6 text-center">توزيع الإيرادات المتوقع</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="total-revenue-label">
+                    <p class="text-gray-400 text-sm mb-1">النموذج يركز على</p>
+                    <p class="text-2xl font-bold text-white">التنوع والاستقرار</p>
+                    <p class="text-xs text-gray-500 mt-2">Diversity lowers risk</p>
+                </div>
+            </div>
+            <!-- Right Side: Revenue Cards Grid -->
+            <div class="cards-grid">
+                <!-- 1. Commission -->
+                <div class="revenue-card card-commission">
+                    <div class="flex justify-between items-start">
+                        <div class="card-icon-wrapper">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="percentage-pill">Core Revenue</div>
+                    </div>
+                    <h3 class="card-title">عمولة الطلبات</h3>
+                    <p class="card-desc">
+                        نسبة مئوية ثابتة من قيمة الطلب الإجمالية. يتم احتساب العمولة بذكاء <strong>بعد تطبيق
+                            الخصومات</strong> لضمان العدالة للمطاعم وتشجيع العروض.
+                    </p>
+                    <div class="card-footer">
+                        <span class="text-xs text-gray-400">Impact: High Volume</span>
+                        <i class="fas fa-arrow-up text-green-500 transform rotate-45"></i>
+                    </div>
+                </div>
+                <!-- 2. Subscriptions -->
+                <div class="revenue-card card-subscription">
+                    <div class="flex justify-between items-start">
+                        <div class="card-icon-wrapper">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="percentage-pill">Recurring</div>
+                    </div>
+                    <h3 class="card-title">اشتراكات شهرية (SaaS)</h3>
+                    <p class="card-desc">
+                        باقات شهرية متدرجة للمطاعم تمنحهم ميزات إضافية (مثل تقارير متقدمة، زيادة حدود الطلبات اليومية،
+                        وإدارة الفروع المتعددة).
+                    </p>
+                    <div class="card-footer">
+                        <span class="text-xs text-gray-400">Impact: Stability</span>
+                        <i class="fas fa-check text-orange-500"></i>
+                    </div>
+                </div>
+                <!-- 3. Additional Fees -->
+                <div class="revenue-card card-fees">
+                    <div class="flex justify-between items-start">
+                        <div class="card-icon-wrapper">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="percentage-pill">Add-ons</div>
+                    </div>
+                    <h3 class="card-title">رسوم إضافية وتشغيلية</h3>
+                    <p class="card-desc">
+                        رسوم متغيرة تشمل "أولوية التوصيل" للمستخدم، ورسوم "Boost" للمطاعم لزيادة الظهور في القوائم خلال
+                        أوقات الذروة.
+                    </p>
+                    <div class="card-footer">
+                        <span class="text-xs text-gray-400">Impact: Margins</span>
+                        <i class="fas fa-plus text-blue-500"></i>
+                    </div>
+                </div>
+                <!-- 4. Advertising -->
+                <div class="revenue-card card-ads">
+                    <div class="flex justify-between items-start">
+                        <div class="card-icon-wrapper">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="percentage-pill">Future Growth</div>
+                    </div>
+                    <h3 class="card-title">الإعلانات (Future)</h3>
+                    <p class="card-desc">
+                        مساحات إعلانية مخصصة داخل التطبيق للمطاعم والعلامات التجارية الشريكة (مثل Banner Ads أو
+                        Sponsored Listings) لزيادة المبيعات.
+                    </p>
+                    <div class="card-footer">
+                        <span class="text-xs text-gray-400">Impact: Scalability</span>
+                        <i class="fas fa-chart-line text-purple-500"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['العمولة', 'الاشتراكات', 'رسوم إضافية', 'الإعلانات'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)', // Green - Commission
+                        'rgba(242, 140, 40, 0.8)', // Orange - Subscription
+                        'rgba(59, 130, 246, 0.8)', // Blue - Fees
+                        'rgba(139, 92, 246, 0.8)'  // Purple - Ads
+                    ],
+                    borderColor: 'rgba(11, 31, 59, 1)',
+                    borderWidth: 3,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#CBD5E1',
+                            font: {
+                                family: 'Cairo',
+                                size: 11
+                            },
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { family: 'Cairo' },
+                        bodyFont: { family: 'Cairo' },
+                        padding: 10,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

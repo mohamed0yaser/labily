@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tech Stack</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Stack Layout */
+        .stack-container {
+            flex: 1;
+            padding: 20px 60px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        /* Layer Styles */
+        .tech-layer {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .layer-label {
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            transform: translateY(-50%) translateX(100%);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 0.75rem;
+            color: #64748B;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .layer-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #94A3B8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        /* Tech Card */
+        .tech-card {
+            background-color: rgba(11, 31, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tech-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border-radius: 6px;
+        }
+
+        .tech-info h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        .tech-info p {
+            font-size: 0.7rem;
+            color: #94A3B8;
+            margin: 0;
+        }
+
+        /* Specific Colors per tech type */
+        .icon-frontend {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+
+        .icon-backend {
+            background: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+        }
+
+        .icon-data {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34D399;
+        }
+
+        .icon-infra {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FBBF24;
+        }
+
+        .icon-realtime {
+            background: rgba(236, 72, 153, 0.2);
+            color: #F472B6;
+        }
+
+        /* Specific Grid Layouts for Layers */
+        .grid-frontend {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .grid-backend {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-infra {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* Connectors */
+        .connector {
+            height: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .line {
+            width: 2px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Technology Stack</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    الهيكل التقني <span class="text-gray-400">(Tech Stack)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Scalable, Modular, Secure</p>
+            </div>
+        </div>
+        <!-- Main Stack Content -->
+        <div class="stack-container">
+            <!-- Layer 1: Frontend -->
+            <div class="tech-layer" style="border-top: 2px solid #3B82F6;">
+                <div class="layer-header">
+                    <i class="fas fa-desktop text-blue-400"></i>
+                    <p>Client Side &amp; Frontend (SPA)</p>
+                </div>
+                <div class="tech-grid grid-frontend">
+                    <!-- Vue/React -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-frontend"><i class="fab fa-vuejs"></i></div>
+                        <div class="tech-info">
+                            <h4>Vue.js / React</h4>
+                            <p>Single Page App</p>
+                        </div>
+                    </div>
+                    <!-- Mobile -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-frontend"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="tech-info">
+                            <h4>Flutter</h4>
+                            <p>iOS &amp; Android</p>
+                        </div>
+                    </div>
+                    <!-- Admin -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-frontend"><i class="fas fa-user-shield"></i></div>
+                        <div class="tech-info">
+                            <h4>Admin Panel</h4>
+                            <p>Blade</p>
+                        </div>
+                    </div>
+                    <!-- Maps -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-frontend"><i class="fas fa-map-marked"></i></div>
+                        <div class="tech-info">
+                            <h4>Google Maps API</h4>
+                            <p>Geolocation</p>
+                        </div>
+                    </div>
+                </div>
+                <span class="layer-label">Presentation</span>
+            </div>
+            <!-- Connector -->
+            <div class="connector">
+                <div class="line"></div>
+            </div>
+            <!-- Layer 2: Backend & Realtime -->
+            <div class="flex gap-4">
+                <!-- Backend Core -->
+                <div class="tech-layer flex-grow" style="flex: 2; border-top: 2px solid #EF4444;">
+                    <div class="layer-header">
+                        <i class="fas fa-server text-red-400"></i>
+                        <p>Core Backend (Modular Monolith)</p>
+                    </div>
+                    <div class="tech-grid grid-backend">
+                        <!-- Laravel -->
+                        <div class="tech-card">
+                            <div class="tech-icon icon-backend"><i class="fab fa-laravel"></i></div>
+                            <div class="tech-info">
+                                <h4>Laravel 10+</h4>
+                                <p>Core Framework</p>
+                            </div>
+                        </div>
+                        <!-- API -->
+                        <div class="tech-card">
+                            <div class="tech-icon icon-backend"><i class="fas fa-network-wired"></i></div>
+                            <div class="tech-info">
+                                <h4>RESTful API</h4>
+                                <p>Standardized Comms</p>
+                            </div>
+                        </div>
+                        <!-- Workers -->
+                        <div class="tech-card">
+                            <div class="tech-icon icon-backend"><i class="fas fa-tasks"></i></div>
+                            <div class="tech-info">
+                                <h4>Queue Workers</h4>
+                                <p>Async Jobs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Realtime -->
+                <div class="tech-layer flex-grow" style="flex: 1; border-top: 2px solid #EC4899;">
+                    <div class="layer-header">
+                        <i class="fas fa-bolt text-pink-400"></i>
+                        <p>Realtime Layer</p>
+                    </div>
+                    <div class="tech-grid" style="grid-template-columns: 1fr;">
+                        <!-- Firebase -->
+                        <div class="tech-card">
+                            <div class="tech-icon icon-realtime"><i class="fas fa-fire"></i></div>
+                            <div class="tech-info">
+                                <h4>Firebase</h4>
+                                <p>Live Tracking</p>
+                            </div>
+                        </div>
+                        <!-- Socket -->
+                        <div class="tech-card">
+                            <div class="tech-icon icon-realtime"><i class="fas fa-bell"></i></div>
+                            <div class="tech-info">
+                                <h4>Firebase</h4>
+                                <p>Notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Connector -->
+            <div class="connector">
+                <div class="line"></div>
+            </div>
+            <!-- Layer 3: Data & Infrastructure -->
+            <div class="tech-layer" style="border-top: 2px solid #10B981;">
+                <div class="layer-header">
+                    <i class="fas fa-database text-green-400"></i>
+                    <p>Infrastructure &amp; Data Persistence</p>
+                </div>
+                <div class="tech-grid grid-infra">
+                    <!-- AWS -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-infra"><i class="fab fa-aws"></i></div>
+                        <div class="tech-info">
+                            <h4>AWS Cloud</h4>
+                            <p>EC2, RDS, S3</p>
+                        </div>
+                    </div>
+                    <!-- PostgreSQL -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-data"><i class="fas fa-database"></i></div>
+                        <div class="tech-info">
+                            <h4>MySQL</h4>
+                            <p>Primary DB (Spatial)</p>
+                        </div>
+                    </div>
+                    <!-- Redis -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-data"><i class="fas fa-memory"></i></div>
+                        <div class="tech-info">
+                            <h4>Redis</h4>
+                            <p>Caching &amp; Session</p>
+                        </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="tech-card">
+                        <div class="tech-icon icon-data"><i class="fas fa-search"></i></div>
+                        <div class="tech-info">
+                            <h4>MeiliSearch / ES</h4>
+                            <p>Fast Search</p>
+                        </div>
+                    </div>
+                </div>
+                <span class="layer-label">Foundation</span>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Designed for High Availability &amp; Scalability</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-code-branch"></i>
+                <p>CI/CD Automated Deployment</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

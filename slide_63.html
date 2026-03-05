@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Scalability, Performance &amp; High Availability</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Content Layout */
+        .content-wrapper {
+            flex: 1;
+            padding: 20px 60px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            z-index: 10;
+        }
+
+        /* Introduction Text */
+        .intro-text {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #F28C28;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .intro-text p {
+            color: #CBD5E1;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Cards Container */
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            flex: 1;
+        }
+
+        /* Checklist Card */
+        .check-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .check-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            margin: 2px 0 0 0;
+        }
+
+        /* Checklist Items */
+        .check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.02);
+            transition: background 0.2s;
+        }
+
+        .check-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #E2E8F0;
+            margin-bottom: 2px;
+        }
+
+        .item-desc {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+
+        /* Variations with Solid Colors */
+        .card-scalability {
+            border-top: 4px solid #8B5CF6;
+        }
+
+        .card-scalability .icon-box {
+            background-color: #8B5CF6;
+            color: white;
+        }
+
+        .card-scalability .check-icon {
+            background-color: rgba(139, 92, 246, 0.2);
+            color: #A78BFA;
+            border: 1px solid #8B5CF6;
+        }
+
+        .card-availability {
+            border-top: 4px solid #06B6D4;
+        }
+
+        .card-availability .icon-box {
+            background-color: #06B6D4;
+            color: white;
+        }
+
+        .card-availability .check-icon {
+            background-color: rgba(6, 182, 212, 0.2);
+            color: #22D3EE;
+            border: 1px solid #06B6D4;
+        }
+
+        .card-performance {
+            border-top: 4px solid #F43F5E;
+        }
+
+        .card-performance .icon-box {
+            background-color: #F43F5E;
+            color: white;
+        }
+
+        .card-performance .check-icon {
+            background-color: rgba(244, 63, 94, 0.2);
+            color: #FB7185;
+            border: 1px solid #F43F5E;
+        }
+
+        /* Badges */
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-infra {
+            background-color: rgba(139, 92, 246, 0.2);
+            color: #C4B5FD;
+            border: 1px solid #8B5CF6;
+        }
+
+        .badge-reliable {
+            background-color: rgba(6, 182, 212, 0.2);
+            color: #67E8F9;
+            border: 1px solid #06B6D4;
+        }
+
+        .badge-speed {
+            background-color: rgba(244, 63, 94, 0.2);
+            color: #FDA4AF;
+            border: 1px solid #F43F5E;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-indigo-500"></span>
+                    <p class="text-indigo-400 font-bold uppercase tracking-widest text-sm">Non-Functional Requirements
+                    </p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    Scalability <span class="text-gray-400">و</span> Performance
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">High Availability &amp; Optimization Strategy</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Intro Text -->
+            <div class="intro-text">
+                <p>
+                    تم تصميم البنية التحتية للنظام لضمان أعلى مستويات الأداء (Performance)، والتوسع التلقائي مع نمو
+                    الطلب (Scalability)، والتوافر المستمر (High Availability) لضمان استمرارية الأعمال دون انقطاع.
+                </p>
+            </div>
+            <!-- Grid -->
+            <div class="checklist-grid">
+                <!-- 1. Scalability -->
+                <div class="check-card card-scalability">
+                    <div class="status-badge badge-infra">Infrastructure</div>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">قابلية التوسع</h3>
+                            <p class="card-subtitle">Scalability</p>
+                        </div>
+                    </div>
+                    <ul class="check-list">
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">AWS Auto Scaling</div>
+                                <p class="item-desc">زيادة الموارد تلقائيًا (EC2) بناءً على الحمل (CPU/RAM).</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Read Replicas</div>
+                                <p class="item-desc">توزيع ضغط القراءة على خوادم قواعد بيانات متعددة (RDS).</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Modular Architecture</div>
+                                <p class="item-desc">بنية معيارية تسهل فصل الخدمات وتوسعها بشكل مستقل.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Asset Offloading</div>
+                                <p class="item-desc">تخزين الوسائط على S3 وتوزيعها عالميًا عبر CloudFront.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 2. High Availability -->
+                <div class="check-card card-availability">
+                    <div class="status-badge badge-reliable">Reliability</div>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">التوافر العالي</h3>
+                            <p class="card-subtitle">High Availability (HA)</p>
+                        </div>
+                    </div>
+                    <ul class="check-list">
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Multi-AZ Deployment</div>
+                                <p class="item-desc">توزيع الخوادم وقواعد البيانات على عدة مراكز بيانات (Zones).</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Automatic Failover</div>
+                                <p class="item-desc">تحويل تلقائي للخوادم الاحتياطية في حال تعطل الأساسية.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Health Checks</div>
+                                <p class="item-desc">مراقبة مستمرة لصحة الخدمات واستبعاد المكونات المتعطلة.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Data Backups</div>
+                                <p class="item-desc">نسخ احتياطي يومي ولحظي (Point-in-time Recovery).</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 3. Performance -->
+                <div class="check-card card-performance">
+                    <div class="status-badge badge-speed">Speed</div>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">الأداء والسرعة</h3>
+                            <p class="card-subtitle">Performance Optimization</p>
+                        </div>
+                    </div>
+                    <ul class="check-list">
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Caching Layer (Redis)</div>
+                                <p class="item-desc">تخزين البيانات النشطة (Hot Data) لتقليل زمن الاستجابة.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">CDN Integration</div>
+                                <p class="item-desc">تسريع تحميل المحتوى الثابت للمستخدمين عبر CloudFront.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Query Optimization</div>
+                                <p class="item-desc">فهرسة قواعد البيانات وتحسين الاستعلامات المعقدة.</p>
+                            </div>
+                        </li>
+                        <li class="check-item">
+                            <div class="check-icon"><i class="fas fa-check"></i></div>
+                            <div class="item-content">
+                                <div class="item-title">Async Processing</div>
+                                <p class="item-desc">معالجة المهام الثقيلة في الخلفية (Queues) لعدم تعطيل الرد.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Technical Requirements &amp; Infrastructure Standards</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-server text-indigo-400"></i>
+                <p>99.9% Uptime SLA Target</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

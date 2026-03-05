@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Geo Expansion Timeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Map Background */
+        .map-bg {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            height: 80%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"><path d="M20,50 Q40,20 60,50 T90,50 M10,30 L90,80" /></svg>');
+            /* Abstract lines placeholder */
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .world-map-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            opacity: 0.3;
+        }
+
+        /* Timeline Container */
+        .timeline-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            padding: 0 40px;
+            margin-top: 40px;
+        }
+
+        /* Connecting Line */
+        .timeline-line {
+            position: absolute;
+            top: 50px;
+            /* Aligns with icon center */
+            left: 100px;
+            right: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 50px;
+            right: 100px;
+            /* Starts from right for RTL */
+            width: 35%;
+            /* Progress to the second stage */
+            height: 4px;
+            background: linear-gradient(270deg, #F28C28 0%, #3B82F6 100%);
+            /* Gradient direction corrected for RTL visually */
+            z-index: 0;
+        }
+
+        /* Stage Card */
+        .stage-card {
+            position: relative;
+            width: 30%;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Stage Icon */
+        .stage-icon-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0B1F3B;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .stage-icon-inner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        /* Content Box */
+        .stage-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .stage-subtitle {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .stage-list {
+            text-align: right;
+            margin-top: auto;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #CBD5E1;
+            line-height: 1.4;
+        }
+
+        .list-bullet {
+            margin-top: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Specific Styles */
+        /* Kuwait (Active) */
+        .stage-kuwait .stage-icon-wrapper {
+            border-color: rgba(242, 140, 40, 0.5);
+        }
+
+        .stage-kuwait .stage-icon-inner {
+            background: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .stage-kuwait .stage-content {
+            border-top: 4px solid #F28C28;
+            background: linear-gradient(180deg, rgba(242, 140, 40, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        }
+
+        .stage-kuwait .stage-subtitle {
+            background: rgba(242, 140, 40, 0.2);
+            color: #F28C28;
+        }
+
+        .stage-kuwait .list-bullet {
+            background: #F28C28;
+        }
+
+        /* Egypt (Next) */
+        .stage-egypt .stage-icon-wrapper {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .stage-egypt .stage-icon-inner {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .stage-egypt .stage-content {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .stage-egypt .stage-subtitle {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+        }
+
+        .stage-egypt .list-bullet {
+            background: #3B82F6;
+        }
+
+        /* Gulf (Future) */
+        .stage-gulf .stage-icon-wrapper {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .stage-gulf .stage-icon-inner {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+
+        .stage-gulf .stage-content {
+            border-top: 4px solid #10B981;
+        }
+
+        .stage-gulf .stage-subtitle {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+
+        .stage-gulf .list-bullet {
+            background: #10B981;
+        }
+
+        .pulsing-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #F28C28;
+            opacity: 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="world-map-dots"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Strategic Roadmap</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    التوسع الجغرافي <span class="text-gray-300">التدريجي</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">خطة النمو الإقليمي (Regional Expansion Plan)</p>
+            </div>
+        </div>
+        <!-- Main Content: Timeline -->
+        <div class="flex-1 px-12 pb-12 z-10 flex flex-col justify-center">
+            <div class="timeline-wrapper">
+                <!-- Connecting Line -->
+                <div class="timeline-line"></div>
+                <div class="timeline-progress"></div>
+                <!-- Stage 1: Kuwait (Right - Start) -->
+                <div class="stage-card stage-kuwait">
+                    <div class="stage-icon-wrapper">
+                        <div class="pulsing-circle"></div>
+                        <div class="stage-icon-inner">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                    </div>
+                    <div class="stage-content">
+                        <h3 class="stage-title">الكويت</h3>
+                        <p class="stage-subtitle">المرحلة الأولى (MVP)</p>
+                        <div class="stage-list">
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>سوق منظم وقوة شرائية عالية.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>اختبار نموذج العمليات والتشغيل.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>الدفع: Cash + Wallet Refund فقط.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>بناء قاعدة سائقين مستقلين أولية.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stage 2: Egypt (Center - Next) -->
+                <div class="stage-card stage-egypt">
+                    <div class="stage-icon-wrapper">
+                        <div class="stage-icon-inner">
+                            <i class="fas fa-city"></i>
+                        </div>
+                    </div>
+                    <div class="stage-content">
+                        <h3 class="stage-title">مصر</h3>
+                        <p class="stage-subtitle">المرحلة الثانية (Scale)</p>
+                        <div class="stage-list">
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>البداية: القاهرة والإسكندرية.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>تفعيل Multi-Currency بشكل كامل.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>اختبار الأحمال العالية (High Volume).</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>شراكات استراتيجية مع سلاسل مطاعم.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stage 3: Gulf (Left - Future) -->
+                <div class="stage-card stage-gulf">
+                    <div class="stage-icon-wrapper">
+                        <div class="stage-icon-inner">
+                            <i class="fas fa-globe-asia"></i>
+                        </div>
+                    </div>
+                    <div class="stage-content">
+                        <h3 class="stage-title">الخليج</h3>
+                        <p class="stage-subtitle">المرحلة الثالثة (Dominate)</p>
+                        <div class="stage-list">
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>السعودية (الرياض/جدة) والإمارات والبحرين.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>ميزات الذكاء الاصطناعي المتقدمة.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>نظام مدفوعات إقليمي موحد.</p>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-bullet"></div>
+                                <p>Transition to Microservices.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Stats/Info -->
+            <div
+                class="flex justify-between items-center mt-12 px-8 py-4 bg-white bg-opacity-5 rounded-lg border border-gray-700">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-chart-line text-orange-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xs text-gray-400">Target Growth Rate</p>
+                        <p class="text-lg font-bold text-white">15% MoM</p>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-gray-600"></div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-users text-blue-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xs text-gray-400">Total Addressable Market</p>
+                        <p class="text-lg font-bold text-white">50M+ Users</p>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-gray-600"></div>
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-code-branch text-green-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xs text-gray-400">Tech Readiness</p>
+                        <p class="text-lg font-bold text-white">Modular Core</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

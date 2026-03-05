@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Unit Economics &amp; Platform Profitability</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Glass Panel Styling */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-orange);
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .revenue-stream-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .revenue-stream-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .formula-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed #3B82F6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .formula-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Unit Economics Model</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    كيف تربح المنصة <span class="text-blue-400">(Unit Economics)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">تحليل الربحية على مستوى الطلب الواحد</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 px-12 py-8 grid grid-cols-12 gap-8 z-10">
+            <!-- Left Column: Profit Formula & Drivers (5 Columns) -->
+            <div class="col-span-5 flex flex-col gap-6">
+                <!-- Profit Drivers List -->
+                <div class="glass-panel p-1 flex-1 flex flex-col">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-coins text-blue-400"></i>
+                            محركات الربحية للطلب
+                        </h3>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <!-- Driver 1 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-green-500 bg-opacity-20 text-green-400">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">العمولة الصافية</p>
+                                <p class="text-gray-400 text-xs">تُحسب النسبة بعد خصم العروض لضمان العدالة</p>
+                            </div>
+                        </div>
+                        <!-- Driver 2 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-orange-500 bg-opacity-20 text-orange-400">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">حصة الاشتراك (SaaS)</p>
+                                <p class="text-gray-400 text-xs">توزيع قيمة الاشتراك الشهري على عدد الطلبات</p>
+                            </div>
+                        </div>
+                        <!-- Driver 3 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-purple-500 bg-opacity-20 text-purple-400">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">تكلفة الدعم التشغيلي</p>
+                                <p class="text-gray-400 text-xs">تقل مع الأتمتة واستخدام الذكاء الاصطناعي</p>
+                            </div>
+                        </div>
+                        <!-- Driver 4 -->
+                        <div class="revenue-stream-item">
+                            <div class="icon-box bg-red-500 bg-opacity-20 text-red-400">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">إدارة الذروة</p>
+                                <p class="text-gray-400 text-xs">تمويل حوافز السائقين جزئياً من رسوم الذروة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Formula Box -->
+                <div class="formula-box">
+                    <p class="text-sm text-blue-300 uppercase tracking-widest mb-3 font-bold">صافي ربح المنصة
+                        (Contribution Margin)</p>
+                    <div class="flex items-center justify-between text-base font-bold px-2">
+                        <div class="formula-segment">
+                            <span class="text-green-400">الإيرادات</span>
+                            <span class="text-xs text-gray-400 font-normal">(عمولة + رسوم)</span>
+                        </div>
+                        <i class="fas fa-minus text-gray-500"></i>
+                        <div class="formula-segment">
+                            <span class="text-red-400">التكاليف المباشرة</span>
+                            <span class="text-xs text-gray-400 font-normal">(بوابات دفع + خوادم)</span>
+                        </div>
+                        <i class="fas fa-minus text-gray-500"></i>
+                        <div class="formula-segment">
+                            <span class="text-orange-400">الدعم</span>
+                            <span class="text-xs text-gray-400 font-normal">(تذاكر + تعويضات)</span>
+                        </div>
+                        <i class="fas fa-equals text-white"></i>
+                        <div class="formula-segment">
+                            <span class="text-white bg-blue-600 px-2 py-1 rounded">الربح</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column: Visuals & KPIs (7 Columns) -->
+            <div class="col-span-7 flex flex-col gap-6">
+                <!-- Top Row: KPI Cards -->
+                <div class="grid grid-cols-3 gap-4 h-32">
+                    <div class="kpi-card border-l-4 border-green-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">LTV / CAC Ratio</p>
+                            <i class="fas fa-balance-scale text-green-500"></i>
+                        </div>
+                        <p class="text-4xl font-bold text-white">3.5x</p>
+                        <p class="text-xs text-green-300 mt-1">مؤشر صحي للنمو</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Payback Period</p>
+                            <i class="fas fa-hourglass-half text-blue-500"></i>
+                        </div>
+                        <p class="text-4xl font-bold text-white">6 Mo</p>
+                        <p class="text-xs text-blue-300 mt-1">فترة استرداد تكلفة العميل</p>
+                    </div>
+                    <div class="kpi-card border-l-4 border-purple-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-400 text-xs uppercase">Contribution Margin</p>
+                            <i class="fas fa-chart-pie text-purple-500"></i>
+                        </div>
+                        <p class="text-4xl font-bold text-white">2.5%</p>
+                        <p class="text-xs text-purple-300 mt-1">صافي هامش الربح من GMV</p>
+                    </div>
+                </div>
+                <!-- Bottom Row: Charts -->
+                <div class="glass-panel p-6 flex-1 grid grid-cols-2 gap-6">
+                    <!-- Chart 1: Unit Economics Waterfall -->
+                    <div class="flex flex-col items-center justify-center w-full">
+                        <p class="text-sm font-bold text-gray-300 mb-2 text-center">تحليل ربحية الطلب (Waterfall)</p>
+                        <div class="relative w-full h-48">
+                            <canvas id="waterfallChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Chart 2: LTV vs CAC -->
+                    <div class="flex flex-col items-center justify-center w-full">
+                        <p class="text-sm font-bold text-gray-300 mb-2 text-center">تطور القيمة العمرية مقابل التكلفة
+                        </p>
+                        <div class="relative w-full h-48">
+                            <canvas id="ltvCacChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Chart 1: Unit Economics Waterfall
+        const ctxWaterfall = document.getElementById('waterfallChart').getContext('2d');
+        new Chart(ctxWaterfall, {
+            type: 'bar',
+            data: {
+                labels: ['إيراد العمولة', 'رسوم الخدمة', 'بوابة الدفع', 'البنية التحتية', 'الدعم', 'صافي الربح'],
+                datasets: [{
+                    label: 'القيمة (د.ك)',
+                    data: [0.850, 0.200, -0.150, -0.050, -0.100, 0.750], // Example values
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.7)', // Revenue Green
+                        'rgba(16, 185, 129, 0.7)', // Revenue Green
+                        'rgba(239, 68, 68, 0.7)',  // Cost Red
+                        'rgba(239, 68, 68, 0.7)',  // Cost Red
+                        'rgba(239, 68, 68, 0.7)',  // Cost Red
+                        'rgba(59, 130, 246, 0.9)'  // Profit Blue
+                    ],
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.raw + ' KWD';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#cbd5e1', font: { family: 'Cairo', size: 10 } },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { display: false },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: LTV vs CAC
+        const ctxLtv = document.getElementById('ltvCacChart').getContext('2d');
+        new Chart(ctxLtv, {
+            type: 'line',
+            data: {
+                labels: ['M1', 'M3', 'M6', 'M12', 'M18', 'M24'],
+                datasets: [
+                    {
+                        label: 'LTV (القيمة العمرية)',
+                        data: [5, 15, 35, 80, 140, 220],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'CAC (تكلفة الاستحواذ)',
+                        data: [20, 18, 15, 12, 10, 8],
+                        borderColor: '#EF4444',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { family: 'Cairo', size: 10 }, boxWidth: 10 }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8', font: { family: 'Cairo', size: 10 } },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { display: false },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Delivery Pricing Logic</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+            gap: 40px;
+        }
+
+        /* Equation Section */
+        .equation-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .equation-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(11, 31, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            width: 200px;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .equation-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .eq-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .eq-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #E2E8F0;
+        }
+
+        .eq-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .operator {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #64748B;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border: none;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .result-box .eq-title,
+        .result-box .eq-desc {
+            color: #FFFFFF;
+        }
+
+        /* Color Accents */
+        .box-base .eq-icon {
+            color: #60A5FA;
+            border: 1px solid #3B82F6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .box-dist .eq-icon {
+            color: #A78BFA;
+            border: 1px solid #8B5CF6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .box-peak .eq-icon {
+            color: #F28C28;
+            border: 1px solid #F28C28;
+            background: rgba(242, 140, 40, 0.1);
+        }
+
+        .box-result .eq-icon {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Logic Grid */
+        .logic-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            flex: 1;
+        }
+
+        .logic-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 4px solid;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logic-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logic-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .logic-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .logic-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #CBD5E1;
+        }
+
+        .logic-item i {
+            margin-top: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Card Variations */
+        .card-distance {
+            border-color: #3B82F6;
+        }
+
+        .card-distance .logic-title {
+            color: #60A5FA;
+        }
+
+        .card-peak {
+            border-color: #F28C28;
+        }
+
+        .card-peak .logic-title {
+            color: #FDBA74;
+        }
+
+        .card-config {
+            border-color: #10B981;
+        }
+
+        .card-config .logic-title {
+            color: #6EE7B7;
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background-color: #1E293B;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #94A3B8;
+            border: 1px solid #334155;
+            margin-top: auto;
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-green-500"></span>
+                    <p class="text-green-400 font-bold uppercase tracking-widest text-sm">Financial Engine</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    منطق التسعير <span class="text-gray-400">(المسافة + الذروة)</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Dynamic Pricing Model &amp; Surcharges</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Equation Visualization -->
+            <div class="equation-container">
+                <!-- Base -->
+                <div class="equation-box box-base">
+                    <div class="eq-icon"><i class="fas fa-flag-checkered"></i></div>
+                    <h3 class="eq-title">السعر الأساسي</h3>
+                    <p class="eq-desc">رسوم فتح العداد الثابتة (Base Fare)</p>
+                </div>
+                <div class="operator">+</div>
+                <!-- Distance -->
+                <div class="equation-box box-dist">
+                    <div class="eq-icon"><i class="fas fa-route"></i></div>
+                    <h3 class="eq-title">المسافة</h3>
+                    <p class="eq-desc">(عدد الكيلومترات × السعر/كم)</p>
+                </div>
+                <div class="operator">+</div>
+                <!-- Peak -->
+                <div class="equation-box box-peak">
+                    <div class="eq-icon"><i class="fas fa-bolt"></i></div>
+                    <h3 class="eq-title">عامل الذروة</h3>
+                    <p class="eq-desc">نسبة زيادة أو مبلغ ثابت (Surge)</p>
+                </div>
+                <div class="operator">=</div>
+                <!-- Result -->
+                <div class="equation-box result-box box-result">
+                    <div class="eq-icon"><i class="fas fa-receipt"></i></div>
+                    <h3 class="eq-title">سعر التوصيل</h3>
+                    <p class="eq-desc">المبلغ النهائي الظاهر للعميل</p>
+                </div>
+            </div>
+            <!-- Detailed Logic Grid -->
+            <div class="logic-grid">
+                <!-- Card 1: Distance Logic -->
+                <div class="logic-card card-distance">
+                    <div class="logic-header">
+                        <i class="fas fa-map-marked-alt text-blue-400"></i>
+                        <h3 class="logic-title">منطق المسافة (Distance)</h3>
+                    </div>
+                    <ul class="logic-list">
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-blue-500 text-xs"></i>
+                            <p>يتم احتساب المسافة بناءً على المسار الفعلي (Google Maps API) وليس الخط المستقيم.</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-blue-500 text-xs"></i>
+                            <p>يمكن تحديد سعر مختلف لأول X كيلومترات، وسعر آخر لما بعدها (Tiered Pricing).</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-blue-500 text-xs"></i>
+                            <p>دعم الحدود الجغرافية (Geo-fencing) لتسعير المناطق النائية.</p>
+                        </li>
+                    </ul>
+                    <div class="admin-badge">
+                        <i class="fas fa-sliders-h"></i> Configurable per City
+                    </div>
+                </div>
+                <!-- Card 2: Peak Logic -->
+                <div class="logic-card card-peak">
+                    <div class="logic-header">
+                        <i class="fas fa-chart-line text-orange-400"></i>
+                        <h3 class="logic-title">إدارة الذروة (Surge Pricing)</h3>
+                    </div>
+                    <ul class="logic-list">
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-orange-500 text-xs"></i>
+                            <p>تفعيل تلقائي عند نقص السائقين مقابل الطلبات في منطقة معينة.</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-orange-500 text-xs"></i>
+                            <p>تفعيل يدوي من الأدمن لأوقات محددة (مثل: رمضان، الأعياد، المطر).</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-orange-500 text-xs"></i>
+                            <p>عرض واضح للمستخدم "رسوم طلب مرتفع" قبل التأكيد.</p>
+                        </li>
+                    </ul>
+                    <div class="admin-badge">
+                        <i class="fas fa-clock"></i> Scheduled or Realtime
+                    </div>
+                </div>
+                <!-- Card 3: Transparency -->
+                <div class="logic-card card-config">
+                    <div class="logic-header">
+                        <i class="fas fa-eye text-green-400"></i>
+                        <h3 class="logic-title">الشفافية والتحكم</h3>
+                    </div>
+                    <ul class="logic-list">
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-green-500 text-xs"></i>
+                            <p>المستخدم يرى تفاصيل السعر قبل الطلب (Upfront Pricing).</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-green-500 text-xs"></i>
+                            <p>السائق يرى أجره المتوقع (شاملاً حوافز الذروة) قبل القبول.</p>
+                        </li>
+                        <li class="logic-item">
+                            <i class="fas fa-circle text-green-500 text-xs"></i>
+                            <p>إمكانية دعم الخصومات على التوصيل فقط (Free Delivery Promo).</p>
+                        </li>
+                    </ul>
+                    <div class="admin-badge">
+                        <i class="fas fa-check-double"></i> Full Audit Trail
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Financial Strategy &amp; Revenue Optimization</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-coins text-yellow-500"></i>
+                <p>Maximizes Driver Availability during Peak Hours</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

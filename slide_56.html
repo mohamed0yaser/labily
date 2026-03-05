@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Loyalty &amp; Voucher Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Layout */
+        .content-wrapper {
+            flex: 1;
+            padding: 20px 60px 30px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        /* Top Section: Flow */
+        .flow-section {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Connecting Line */
+        .flow-line {
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background: linear-gradient(to left, rgba(242, 140, 40, 0.2), rgba(242, 140, 40, 0.8), rgba(242, 140, 40, 0.2));
+            z-index: 0;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            width: 200px;
+        }
+
+        .step-icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .step-icon-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(242, 140, 40, 0.2);
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+            font-size: 1.1rem;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        /* Bottom Section: Split */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        .detail-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .info-item:hover {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .info-icon {
+            margin-top: 2px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .info-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin: 0 0 4px 0;
+        }
+
+        .info-content p {
+            font-size: 0.9rem;
+            color: #94A3B8;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* Specific Styles */
+        .step-1 .step-icon-circle {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        /* Earn */
+        .step-2 .step-icon-circle {
+            border-color: #F28C28;
+            color: #F28C28;
+        }
+
+        /* Threshold */
+        .step-3 .step-icon-circle {
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        /* Voucher */
+
+        .points-card {
+            border-top: 4px solid #F28C28;
+        }
+
+        .retention-card {
+            border-top: 4px solid #3B82F6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Loyalty &amp; Voucher Engine
+                    </p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    نظام النقاط <span class="text-gray-400">والتحويل</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">محرك ذكي لتحويل العمليات اليومية إلى ولاء مستدام</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Top: Flow -->
+            <div class="flow-section">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-sync-alt text-orange-400 ml-3"></i>دورة
+                        حياة النقاط (Points Lifecycle)</h2>
+                    <span
+                        class="text-xs bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full border border-blue-800">Automated
+                        Logic</span>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-line"></div>
+                    <!-- Step 1 -->
+                    <div class="step-item step-1">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 class="step-title">1. اكتساب النقاط</h3>
+                        <p class="step-desc">نسبة مئوية من صافي قيمة الطلب تضاف تلقائياً للرصيد.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="step-item step-2">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="step-title">2. بلوغ الحد الأدنى</h3>
+                        <p class="step-desc">تراكم النقاط حتى الوصول إلى عتبة التحويل (Threshold).</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="step-item step-3">
+                        <div class="step-icon-circle">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <h3 class="step-title">3. إصدار القسيمة</h3>
+                        <p class="step-desc">تحويل النقاط إلى Voucher صالح للاستخدام في الطلب القادم.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom: Details Grid -->
+            <div class="details-grid">
+                <!-- Left: Points Mechanics -->
+                <div class="detail-card points-card">
+                    <div class="card-header">
+                        <div
+                            class="w-10 h-10 rounded bg-orange-900/30 flex items-center justify-center text-orange-400 text-xl">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>آلية العمل (Mechanics)</h3>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <div class="info-icon text-orange-400"><i class="fas fa-percentage"></i></div>
+                            <div class="info-content">
+                                <h4>معادلة الاحتساب</h4>
+                                <p>تحدد كنسبة من صافي الطلب (Net Value) بعد استبعاد الخصومات والرسوم.</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-orange-400"><i class="fas fa-exchange-alt"></i></div>
+                            <div class="info-content">
+                                <h4>قواعد التحويل (Conversion Rules)</h4>
+                                <p>تحويل تلقائي أو يدوي عند الوصول لرصيد محدد (مثلاً: 1000 نقطة = 1 دينار).</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-orange-400"><i class="fas fa-stopwatch"></i></div>
+                            <div class="info-content">
+                                <h4>الصلاحية والانتهاء (Expiration)</h4>
+                                <p>فترة صلاحية للنقاط والقسائم (مثلاً 60 يوماً) لخلق دافع للاستخدام السريع (Urgency).
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Right: Scope & Retention -->
+                <div class="detail-card retention-card">
+                    <div class="card-header">
+                        <div
+                            class="w-10 h-10 rounded bg-blue-900/30 flex items-center justify-center text-blue-400 text-xl">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>النطاق والاحتفاظ (Scope &amp; Retention)</h3>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <div class="info-icon text-blue-400"><i class="fas fa-store"></i></div>
+                            <div class="info-content">
+                                <h4>نطاق المطعم (Restaurant Scope)</h4>
+                                <p>إمكانية قصر استخدام النقاط على المطعم المانح فقط لتعزيز ولاء العلامة التجارية.</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-blue-400"><i class="fas fa-hand-holding-heart"></i></div>
+                            <div class="info-content">
+                                <h4>تعويض الإلغاء (Cancellation Token)</h4>
+                                <p>منح نقاط رمزية للمستخدم في حال إلغاء الطلب من قبل النظام لامتصاص الغضب.</p>
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <div class="info-icon text-blue-400"><i class="fas fa-layer-group"></i></div>
+                            <div class="info-content">
+                                <h4>نظام الشرائح (Tiers) - مستقبلاً</h4>
+                                <p>تصنيف المستخدمين (فضية، ذهبية) بناءً على مجموع النقاط لمنح مزايا حصرية.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Loyalty Engine Logic Overview</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <p>Increases User LTV &amp; Repeat Rate</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

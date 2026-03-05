@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>MVP &amp; Risk Mitigation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-shield {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            opacity: 0.03;
+            z-index: 0;
+            color: #F28C28;
+        }
+
+        /* Grid Layout */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 24px;
+            height: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Card Styles */
+        .risk-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-card:hover {
+            border-color: rgba(242, 140, 40, 0.3);
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .risk-label {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #94A3B8;
+            font-weight: 600;
+        }
+
+        .mitigation-box {
+            margin-top: auto;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            border-right: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Specific Colors */
+        .card-financial .icon-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+
+        .card-financial .mitigation-box {
+            border-color: #10B981;
+        }
+
+        .card-tech .icon-box {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .card-tech .mitigation-box {
+            border-color: #3B82F6;
+        }
+
+        .card-ops .icon-box {
+            background-color: rgba(242, 140, 40, 0.1);
+            color: #F28C28;
+        }
+
+        .card-ops .mitigation-box {
+            border-color: #F28C28;
+        }
+
+        .card-market .icon-box {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
+
+        .card-market .mitigation-box {
+            border-color: #EF4444;
+        }
+
+        /* Central Badge */
+        .central-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #0B1F3B;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-shield">
+            <svg fill="currentColor" viewbox="0 0 512 512">
+                <path
+                    d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 472c-119.3 0-216-96.7-216-216S136.7 40 256 40s216 96.7 216 216-96.7 216-216 216z">
+                </path>
+            </svg>
+        </div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Risk Management Strategy</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    نموذج MVP <span class="text-gray-400">وتقليل المخاطر</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">استراتيجية إطلاق آمنة ومدروسة</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 px-12 py-8 z-10 relative">
+            <!-- Central Badge -->
+            <div class="central-badge">
+                <i class="fas fa-shield-alt text-3xl text-orange-500 mb-1"></i>
+                <span class="font-bold text-white text-lg">MVP</span>
+                <span class="text-xs text-gray-400">Core</span>
+            </div>
+            <!-- Grid -->
+            <div class="risk-grid">
+                <!-- Card 1: Financial -->
+                <div class="risk-card card-financial">
+                    <span class="risk-label">المخاطر المالية</span>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">إدارة التدفق النقدي</h3>
+                            <p class="text-sm text-gray-400 mt-1">تجنب مشاكل بوابات الدفع المعقدة في البداية</p>
+                        </div>
+                    </div>
+                    <div class="pl-4 pr-2">
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500 text-xs"></i>
+                                الدفع عند الاستلام (Cash) لتعزيز الثقة.</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500 text-xs"></i>
+                                المحفظة للاسترداد فقط (No Deposit).</li>
+                        </ul>
+                    </div>
+                    <div class="mitigation-box">
+                        <i class="fas fa-lock text-green-500"></i>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase">استراتيجية الحل</p>
+                            <p class="text-sm font-bold text-white">Wallet Refund Only Model</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2: Technical -->
+                <div class="risk-card card-tech">
+                    <span class="risk-label">المخاطر التقنية</span>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">استقرار النظام</h3>
+                            <p class="text-sm text-gray-400 mt-1">تجنب تعقيد الخوارزميات قبل نضوج البيانات</p>
+                        </div>
+                    </div>
+                    <div class="pl-4 pr-2">
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-blue-500 text-xs"></i> توزيع
+                                متسلسل بسيط (Sequential Dispatch).</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-blue-500 text-xs"></i> بنية
+                                Modular Monolith سهلة الصيانة.</li>
+                        </ul>
+                    </div>
+                    <div class="mitigation-box">
+                        <i class="fas fa-server text-blue-500"></i>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase">استراتيجية الحل</p>
+                            <p class="text-sm font-bold text-white">Simplicity First Architecture</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3: Operational -->
+                <div class="risk-card card-ops">
+                    <span class="risk-label">المخاطر التشغيلية</span>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">جودة الخدمة (SLA)</h3>
+                            <p class="text-sm text-gray-400 mt-1">منع تكدس الطلبات وتدهور تجربة العميل</p>
+                        </div>
+                    </div>
+                    <div class="pl-4 pr-2">
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-500 text-xs"></i>
+                                حدود يومية للطلبات (Order Capping).</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-orange-500 text-xs"></i>
+                                نطاقات توصيل جغرافية محددة بدقة.</li>
+                        </ul>
+                    </div>
+                    <div class="mitigation-box">
+                        <i class="fas fa-sliders-h text-orange-500"></i>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase">استراتيجية الحل</p>
+                            <p class="text-sm font-bold text-white">Capacity &amp; Zone Control</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4: Expansion -->
+                <div class="risk-card card-market">
+                    <span class="risk-label">مخاطر التوسع</span>
+                    <div class="card-header">
+                        <div class="icon-box">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">الانتشار الجغرافي</h3>
+                            <p class="text-sm text-gray-400 mt-1">تفادي تشتت الموارد في أسواق متعددة مبكراً</p>
+                        </div>
+                    </div>
+                    <div class="pl-4 pr-2">
+                        <ul class="text-sm text-gray-300 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-red-500 text-xs"></i>
+                                التركيز على مدينة واحدة (الكويت) حتى التشبع.</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-red-500 text-xs"></i> التوسع
+                                لاحقاً إلى مصر بنموذج مُثبت.</li>
+                        </ul>
+                    </div>
+                    <div class="mitigation-box">
+                        <i class="fas fa-route text-red-500"></i>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase">استراتيجية الحل</p>
+                            <p class="text-sm font-bold text-white">Phased Rollout Plan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-4 border-t border-gray-700 flex justify-between items-center text-xs text-gray-500">
+            <p>Risk Mitigation Matrix</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-shield-alt text-green-500"></i>
+                <p>High Security Approach</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

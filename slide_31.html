@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Realtime Order Tracking</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Flow Container */
+        .flow-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 60px;
+            z-index: 10;
+            gap: 40px;
+        }
+
+        /* Steps Row */
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        /* Connecting Line Background */
+        .connecting-line {
+            position: absolute;
+            top: 60px;
+            /* Center of the circle icon */
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        /* Step Card */
+        .step-card {
+            position: relative;
+            z-index: 10;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Step Icon Circle */
+        .step-icon-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #0B1F3B;
+            /* Match bg to hide line behind */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            border: 2px solid;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Step Content */
+        .step-content {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            /* backdrop-filter: blur(10px); Removed for export safety */
+        }
+
+        .step-number {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            background-color: #FFFFFF;
+            color: #0B1F3B;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        .actor-badge {
+            margin-top: auto;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            align-self: center;
+            margin-top: 10px;
+        }
+
+        /* Specific Colors - Using Solid Colors instead of Gradients */
+        /* Step 1: Pending - Gray/Blue */
+        .step-1 .step-icon-wrapper {
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        .step-1 .step-icon {
+            background-color: #475569;
+        }
+
+        .step-1 .actor-badge {
+            background-color: rgba(148, 163, 184, 0.2);
+            color: #CBD5E1;
+        }
+
+        /* Step 2: Prep - Orange */
+        .step-2 .step-icon-wrapper {
+            border-color: rgba(242, 140, 40, 0.3);
+        }
+
+        .step-2 .step-icon {
+            background-color: #EA580C;
+        }
+
+        .step-2 .actor-badge {
+            background-color: rgba(242, 140, 40, 0.2);
+            color: #FDBA74;
+        }
+
+        /* Step 3: Assigned - Blue */
+        .step-3 .step-icon-wrapper {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .step-3 .step-icon {
+            background-color: #2563EB;
+        }
+
+        .step-3 .actor-badge {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+
+        /* Step 4: Out - Purple */
+        .step-4 .step-icon-wrapper {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .step-4 .step-icon {
+            background-color: #7C3AED;
+        }
+
+        .step-4 .actor-badge {
+            background-color: rgba(139, 92, 246, 0.2);
+            color: #A78BFA;
+        }
+
+        /* Step 5: Delivered - Green */
+        .step-5 .step-icon-wrapper {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .step-5 .step-icon {
+            background-color: #059669;
+        }
+
+        .step-5 .actor-badge {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #6EE7B7;
+        }
+
+        /* Bottom Status Bar */
+        .system-events {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #64748B;
+        }
+
+        .event-item.active .event-dot {
+            background-color: #10B981;
+            box-shadow: 0 0 10px #10B981;
+        }
+
+        .event-item.active {
+            color: #CBD5E1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-green-500"></span>
+                    <p class="text-green-400 font-bold uppercase tracking-widest text-sm">Realtime Tracking</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    التتبع المباشر <span class="text-gray-400">ومراحل الطلب</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">Firebase Realtime Database Synchronization</p>
+            </div>
+        </div>
+        <!-- Flow Content -->
+        <div class="flow-wrapper">
+            <div class="steps-container">
+                <div class="connecting-line"></div>
+                <!-- Step 1: Pending -->
+                <div class="step-card step-1">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-hourglass-start"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">قيد المراجعة</h3>
+                        <p class="step-desc">تم إرسال الطلب للمطعم، بانتظار القبول خلال 10 دقائق.</p>
+                        <span class="actor-badge">Pending</span>
+                    </div>
+                </div>
+                <!-- Step 2: Preparing -->
+                <div class="step-card step-2">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-fire-burner"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">جاري التحضير</h3>
+                        <p class="step-desc">المطعم قبل الطلب وبدأ في عملية التجهيز والتغليف.</p>
+                        <span class="actor-badge">Preparing</span>
+                    </div>
+                </div>
+                <!-- Step 3: Assigned -->
+                <div class="step-card step-3">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">تعيين سائق</h3>
+                        <p class="step-desc">تم إسناد الطلب لسائق قريب وهو في طريقه للمطعم.</p>
+                        <span class="actor-badge">Assigned</span>
+                    </div>
+                </div>
+                <!-- Step 4: Out for Delivery -->
+                <div class="step-card step-4">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">في الطريق</h3>
+                        <p class="step-desc">استلم السائق الطلب وهو يتجه الآن إلى موقعك (تتبع حي).</p>
+                        <span class="actor-badge">In Transit</span>
+                    </div>
+                </div>
+                <!-- Step 5: Delivered -->
+                <div class="step-card step-5">
+                    <div class="step-icon-wrapper">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <h3 class="step-title">تم التسليم</h3>
+                        <p class="step-desc">وصول الطلب بنجاح، إغلاق الدورة، وطلب التقييم.</p>
+                        <span class="actor-badge">Completed</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Technical Underlay -->
+            <div class="system-events">
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Firebase Listener</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Map Polyline Update</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>ETA Recalculation</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Driver Location Ping</p>
+                </div>
+                <div class="event-item active">
+                    <div class="event-dot"></div>
+                    <p>Status Push Notification</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>State Machine: Order Lifecycle</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-satellite-dish"></i>
+                <p>Live Updates &lt; 200ms Latency</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

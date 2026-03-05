@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>System Architecture Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 1200px) {
+            .slide-container { padding: 8px; }
+            .core-system { margin: 0 8px; }
+            .app-card, .engine-box, .infra-badge { padding: 8px; font-size: 0.95em; }
+        }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; padding: 4px; }
+            .core-system { margin: 0 4px; }
+            .app-card, .engine-box, .infra-badge { padding: 6px; font-size: 0.9em; }
+            .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; padding: 2px; }
+            .core-system { margin: 0 2px; }
+            .app-card, .engine-box, .infra-badge { padding: 4px; font-size: 0.85em; }
+            .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .grid-cols-5 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .px-12 { padding-left: 4px !important; padding-right: 4px !important; }
+            .pt-8 { padding-top: 4px !important; }
+            .pb-4 { padding-bottom: 2px !important; }
+            .p-8 { padding: 4px !important; }
+            .mx-20 { margin-left: 2px !important; margin-right: 2px !important; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+        }
+
+        /* Glass Effect Replacement (Solid Colors for PDF compatibility) */
+        .glass-panel {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .app-card {
+            background-color: rgba(30, 41, 59, 0.8);
+            /* Slate-800 with opacity */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+        }
+
+        .core-system {
+            background-color: rgba(15, 23, 42, 0.6);
+            /* Slate-900 with opacity */
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            /* Blue border */
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .engine-box {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .engine-box:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .infra-badge {
+            background-color: rgba(242, 140, 40, 0.1);
+            border: 1px dashed rgba(242, 140, 40, 0.4);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            color: #fdba74;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Connectors */
+        .connector-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 border-b border-gray-800 flex justify-between items-end">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Technical Overview</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">نظرة عامة على <span class="text-gray-400">المكونات</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">High-Level System Architecture</p>
+            </div>
+        </div>
+        <!-- Diagram Area -->
+        <div class="flex-1 p-8 flex flex-col justify-between relative z-10">
+            <!-- Top Layer: Client Apps -->
+            <div class="grid grid-cols-4 gap-6 px-12 mb-4 z-20">
+                <!-- User App -->
+                <div class="app-card border-t-4 border-blue-500">
+                    <div class="mb-3 text-blue-400 text-2xl"><i class="fas fa-mobile-alt"></i></div>
+                    <h3 class="font-bold text-white mb-1">User App</h3>
+                    <p class="text-xs text-gray-400">flutter</p>
+                </div>
+                <!-- Restaurant App -->
+                <div class="app-card border-t-4 border-orange-500">
+                    <div class="mb-3 text-orange-400 text-2xl"><i class="fas fa-store"></i></div>
+                    <h3 class="font-bold text-white mb-1">Restaurant App</h3>
+                    <p class="text-xs text-gray-400">flutter</p>
+                </div>
+                <!-- Driver App -->
+                <div class="app-card border-t-4 border-green-500">
+                    <div class="mb-3 text-green-400 text-2xl"><i class="fas fa-motorcycle"></i></div>
+                    <h3 class="font-bold text-white mb-1">Driver App</h3>
+                    <p class="text-xs text-gray-400">flutter</p>
+                </div>
+                <!-- Admin Dashboard -->
+                <div class="app-card border-t-4 border-purple-500">
+                    <div class="mb-3 text-purple-400 text-2xl"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="font-bold text-white mb-1">Admin Dashboard</h3>
+                    <p class="text-xs text-gray-400">Blade</p>
+                </div>
+            </div>
+            <!-- Visual Connectors to Core -->
+            <div class="flex justify-center mb-2 relative h-8 z-0">
+                <div
+                    class="absolute w-3/4 h-4 border-b-2 border-l-2 border-r-2 border-gray-600 rounded-b-lg top-0 opacity-50">
+                </div>
+                <div class="absolute w-0.5 h-full bg-gray-600 top-4 opacity-50"></div>
+            </div>
+            <!-- Middle Layer: Core System (Monolith) -->
+            <div class="mx-20 core-system flex-1 mb-6 flex flex-col z-20">
+                <div
+                    class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 px-6 py-1 rounded-full border border-gray-600 shadow-lg z-30">
+                    <p class="text-xs font-bold text-blue-300 tracking-wide"><i
+                            class="fas fa-network-wired mr-2"></i>API Gateway / Load Balancer</p>
+                </div>
+                <h3 class="text-center text-gray-500 text-xs mb-4 mt-2 uppercase tracking-widest">Core Backend System
+                    (Modular Monolith - Laravel)</h3>
+                <div class="grid grid-cols-5 gap-4 h-full">
+                    <!-- Delivery Engine -->
+                    <div class="engine-box">
+                        <i class="fas fa-map-marked-alt text-2xl text-blue-400 mb-2"></i>
+                        <h4 class="font-bold text-sm text-white">Delivery Engine</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">Dispatching &amp; Routing</p>
+                    </div>
+                    <!-- Financial Engine -->
+                    <div class="engine-box">
+                        <i class="fas fa-calculator text-2xl text-green-400 mb-2"></i>
+                        <h4 class="font-bold text-sm text-white">Financial Engine</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">Commissions &amp; Wallets</p>
+                    </div>
+                    <!-- Subscription Engine -->
+                    <div class="engine-box">
+                        <i class="fas fa-sync text-2xl text-orange-400 mb-2"></i>
+                        <h4 class="font-bold text-sm text-white">Subscription Engine</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">Plans &amp; Limits</p>
+                    </div>
+                    <!-- Loyalty Engine -->
+                    <div class="engine-box">
+                        <i class="fas fa-gift text-2xl text-pink-400 mb-2"></i>
+                        <h4 class="font-bold text-sm text-white">Loyalty Engine</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">Points &amp; Vouchers</p>
+                    </div>
+                    <!-- Support Engine -->
+                    <div class="engine-box">
+                        <i class="fas fa-headset text-2xl text-cyan-400 mb-2"></i>
+                        <h4 class="font-bold text-sm text-white">Support Engine</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">Tickets &amp; SLA</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Connector Lines Down -->
+            <div class="flex justify-center mb-2 h-6 relative z-0">
+                <div class="w-0.5 h-full bg-gray-600 opacity-50"></div>
+                <!-- Horizontal spread -->
+                <div
+                    class="absolute bottom-0 w-2/3 h-2 border-t-2 border-l-2 border-r-2 border-gray-600 rounded-t-lg opacity-50">
+                </div>
+            </div>
+            <!-- Bottom Layer: Infrastructure -->
+            <div class="flex justify-center gap-6 px-12 z-20">
+                <div class="infra-badge">
+                    <i class="fas fa-database"></i>
+                    <p>My SQL</p>
+                </div>
+                <div class="infra-badge">
+                    <i class="fab fa-aws"></i>
+                    <p>AWS Cloud</p>
+                </div>
+                <div class="infra-badge text-yellow-400 border-yellow-500/40">
+                    <i class="fas fa-bolt"></i>
+                    <p>Firebase Realtime</p>
+                </div>
+                <div class="infra-badge text-red-400 border-red-500/40">
+                    <i class="fas fa-memory"></i>
+                    <p>Redis Cache</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center bg-[#09182d]">
+            <p class="text-xs text-gray-500">System Architecture Diagram v1.0</p>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <i class="fas fa-cubes"></i>
+                <p>Modular Monolith Structure</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

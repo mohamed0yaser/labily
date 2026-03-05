@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Driver Sequential Distribution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            gap: 40px;
+            padding: 20px 60px 40px 60px;
+            z-index: 10;
+        }
+
+        /* Left Section: Visual Sequence */
+        .sequence-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        /* The Timeline Line */
+        .timeline-line {
+            position: absolute;
+            right: 50px;
+            /* Center of avatars */
+            top: 40px;
+            bottom: 40px;
+            width: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            z-index: 0;
+        }
+
+        /* Driver Card */
+        .driver-card {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Status Colors & Styles */
+        .status-rejected {
+            border-right: 4px solid #EF4444;
+            opacity: 0.6;
+        }
+
+        .status-active {
+            border-right: 4px solid #F28C28;
+            background-color: rgba(242, 140, 40, 0.05);
+            border-color: rgba(242, 140, 40, 0.3);
+            box-shadow: 0 0 20px rgba(242, 140, 40, 0.1);
+            transform: scale(1.02) translateX(-10px);
+        }
+
+        .status-queued {
+            border-right: 4px solid #3B82F6;
+            opacity: 0.5;
+        }
+
+        /* Avatar Section */
+        .avatar-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #1E293B;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 20px;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-rejected .avatar-wrapper {
+            border-color: #EF4444;
+            color: #EF4444;
+        }
+
+        .status-active .avatar-wrapper {
+            border-color: #F28C28;
+            color: #F28C28;
+            background-color: #fff;
+        }
+
+        .status-queued .avatar-wrapper {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        /* Timer Ring (CSS Only) */
+        .timer-ring {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #F28C28;
+            border-right-color: #F28C28;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Driver Info */
+        .driver-info {
+            flex: 1;
+        }
+
+        .driver-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .driver-meta {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Action Badge */
+        .action-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-rejected {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #F87171;
+        }
+
+        .badge-timer {
+            background-color: rgba(242, 140, 40, 0.2);
+            color: #FDBA74;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-queued {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60A5FA;
+        }
+
+        /* Right Section: Logic Panels */
+        .logic-container {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .logic-card {
+            background-color: rgba(11, 31, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logic-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logic-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Logic specific styles */
+        .logic-priority .logic-icon {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+        }
+
+        .logic-timer .logic-icon {
+            background: rgba(242, 140, 40, 0.2);
+            color: #F28C28;
+        }
+
+        .logic-fallback .logic-icon {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .param-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .param-val {
+            font-weight: 700;
+            color: #fff;
+            display: block;
+        }
+
+        .param-label {
+            font-size: 0.7rem;
+            color: #94A3B8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background -->
+        <div class="bg-pattern"></div>
+        <!-- Header -->
+        <div class="px-12 pt-8 pb-4 z-10 flex justify-between items-end border-b border-gray-800">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-blue-500"></span>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-sm">Logistics Algorithm</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    استقبال الطلبات <span class="text-gray-400">والتوزيع Sequential</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">One-by-One Allocation for Fair Distribution</p>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Visual Sequence (Left) -->
+            <div class="sequence-container">
+                <div class="timeline-line"></div>
+                <!-- Step 1: Rejected -->
+                <div class="driver-card status-rejected">
+                    <div class="avatar-wrapper">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">سائق 1 (الأقرب)</h3>
+                        <div class="driver-meta">
+                            <span><i class="fas fa-map-marker-alt ml-1"></i>0.5 كم</span>
+                            <span><i class="fas fa-star ml-1"></i>4.9</span>
+                        </div>
+                    </div>
+                    <div class="action-badge badge-rejected">
+                        <i class="fas fa-times-circle ml-1"></i> رفض / تجاهل
+                    </div>
+                </div>
+                <!-- Step 2: Active (Current) -->
+                <div class="driver-card status-active">
+                    <div class="avatar-wrapper">
+                        <i class="fas fa-motorcycle text-orange-500"></i>
+                        <div class="timer-ring"></div>
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">سائق 2 (الحالي)</h3>
+                        <div class="driver-meta">
+                            <span class="text-orange-300"><i class="fas fa-map-marker-alt ml-1"></i>1.2 كم</span>
+                            <span class="text-orange-300"><i class="fas fa-star ml-1"></i>4.8</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1">
+                        <div class="action-badge badge-timer">
+                            <i class="fas fa-stopwatch ml-1"></i> 25 ثانية متبقية
+                        </div>
+                        <span class="text-xs text-orange-400">قيد الانتظار...</span>
+                    </div>
+                </div>
+                <!-- Step 3: Queued -->
+                <div class="driver-card status-queued">
+                    <div class="avatar-wrapper">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">سائق 3 (التالي)</h3>
+                        <div class="driver-meta">
+                            <span><i class="fas fa-map-marker-alt ml-1"></i>1.8 كم</span>
+                            <span><i class="fas fa-star ml-1"></i>4.7</span>
+                        </div>
+                    </div>
+                    <div class="action-badge badge-queued">
+                        <i class="fas fa-hourglass-half ml-1"></i> في القائمة
+                    </div>
+                </div>
+            </div>
+            <!-- Logic Panels (Right) -->
+            <div class="logic-container">
+                <!-- Logic 1: Priority -->
+                <div class="logic-card logic-priority">
+                    <div class="logic-header">
+                        <div class="logic-icon"><i class="fas fa-sort-amount-down"></i></div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">معايير الترتيب (Ranking)</h3>
+                            <p class="text-xs text-gray-400">كيف نختار "من التالي"؟</p>
+                        </div>
+                    </div>
+                    <div class="param-grid">
+                        <div class="param-item">
+                            <span class="param-val">المسافة</span>
+                            <span class="param-label">الأقرب للمطعم</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-val">النشاط</span>
+                            <span class="param-label">Available Only</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-val">Load</span>
+                            <span class="param-label">الأقل انشغالاً</span>
+                        </div>
+                        <div class="param-item">
+                            <span class="param-val">Batching</span>
+                            <span class="param-label">اتجاه مماثل</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Logic 2: Time Window -->
+                <div class="logic-card logic-timer">
+                    <div class="logic-header">
+                        <div class="logic-icon"><i class="fas fa-history"></i></div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">نافذة القبول (Time Window)</h3>
+                            <p class="text-xs text-gray-400">إدارة الوقت لكل سائق</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-300 leading-relaxed">
+                        <p class="mb-2"><i class="fas fa-check text-orange-400 ml-2"></i><strong>45 ثانية:</strong> فترة
+                            حصرية للسائق لقبول الطلب.</p>
+                        <p><i class="fas fa-check text-orange-400 ml-2"></i><strong>Timeout:</strong> إذا انتهى الوقت
+                            دون رد، يعتبر رفضاً ضمنياً وينتقل النظام للسائق التالي فوراً.</p>
+                    </div>
+                </div>
+                <!-- Logic 3: Fallback -->
+                <div class="logic-card logic-fallback">
+                    <div class="logic-header">
+                        <div class="logic-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">إعادة التوسيع (Fallback)</h3>
+                            <p class="text-xs text-gray-400">في حال رفض الجميع</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-300">
+                        <p>إذا تم رفض الطلب من جميع السائقين في النطاق الأول (3 كم)، يقوم النظام بتوسيع دائرة البحث
+                            تلقائياً (إلى 5 كم، 7 كم) وإعادة الدورة.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-500">
+            <p>Driver App Workflow &amp; Allocation Logic</p>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <p>Prevents 'Fastest Finger' Competition</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

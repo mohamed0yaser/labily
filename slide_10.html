@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Comparison Table</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            min-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background-color: #0B1F3B;
+            color: #FFFFFF;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+        h1 { font-size: 64px; }
+        h2 { font-size: 48px; }
+        .slide-container { font-size: 1.5em; }
+        @media (max-width: 900px) {
+            html, body { font-size: 18px; }
+            h1 { font-size: 40px; }
+            h2 { font-size: 32px; }
+            .slide-container { font-size: 1.2em; }
+        }
+        @media (max-width: 600px) {
+            html, body { font-size: 16px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 22px; }
+            .slide-container { font-size: 1em; }
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0B1F3B;
+            overflow: hidden;
+        }
+
+        /* Color Variables */
+        :root {
+            --primary-dark: #0B1F3B;
+            --accent-orange: #F28C28;
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+            --danger-red: #EF4444;
+            --neutral-gray: #64748B;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(242, 140, 40, 0.03);
+            z-index: 0;
+        }
+
+        /* Glass Table Styles */
+        .glass-table-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 1fr;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Headers */
+        .grid-header {
+            padding: 20px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-feature {
+            background: rgba(11, 31, 59, 0.8);
+            justify-content: flex-start;
+            padding-right: 30px;
+            color: #94A3B8;
+        }
+
+        .header-competitor {
+            background: rgba(255, 255, 255, 0.05);
+            color: #CBD5E1;
+        }
+
+        .header-us {
+            background: rgba(242, 140, 40, 0.15);
+            /* Orange tint */
+            color: #F28C28;
+            position: relative;
+            border-top: 4px solid #F28C28;
+        }
+
+        .header-us::after {
+            content: "Recommended";
+            position: absolute;
+            top: -12px;
+            /* Adjust based on container */
+            right: 50%;
+            transform: translateX(50%);
+            background: #F28C28;
+            color: #0B1F3B;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            /* Hidden by default */
+        }
+
+        /* Rows */
+        .grid-row {
+            display: contents;
+            /* Allows children to participate in the main grid */
+        }
+
+        .cell {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+        }
+
+        .grid-row:hover .cell {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .cell-feature {
+            font-weight: 700;
+            color: #E2E8F0;
+            gap: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cell-competitor {
+            color: #94A3B8;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .cell-us {
+            color: #FFFFFF;
+            background: rgba(242, 140, 40, 0.03);
+            /* Subtle highlight for entire column */
+            font-weight: 600;
+        }
+
+        .icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #F28C28;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .status-icon {
+            margin-left: 10px;
+            font-size: 1.1rem;
+        }
+
+        .check-icon {
+            color: #10B981;
+        }
+
+        .cross-icon {
+            color: #EF4444;
+        }
+
+        .warning-icon {
+            color: #F59E0B;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="slide-container">
+        <!-- Background Elements -->
+        <div class="bg-pattern"></div>
+        <div class="decorative-circle" style="width: 500px; height: 500px; top: -100px; left: -100px;"></div>
+        <div class="decorative-circle"
+            style="width: 300px; height: 300px; bottom: -50px; right: -50px; background-color: rgba(59, 130, 246, 0.03);">
+        </div>
+        <!-- Header -->
+        <div class="px-12 pt-10 pb-6 z-10 flex justify-between items-end">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-10 h-1 bg-orange-500"></span>
+                    <p class="text-orange-400 font-bold uppercase tracking-widest text-sm">Competitive Advantage</p>
+                </div>
+                <h1 class="text-4xl font-black text-white">
+                    الفارق عن <span class="text-gray-400">التطبيقات التقليدية</span>
+                </h1>
+            </div>
+            <div class="text-left">
+                <p class="text-gray-400 text-sm">تحليل مقارن للميزات التنافسية</p>
+            </div>
+        </div>
+        <!-- Main Content: Comparison Table -->
+        <div class="flex-1 px-12 pb-12 z-10 overflow-hidden">
+            <div class="glass-table-container">
+                <div class="comparison-grid">
+                    <!-- Headers -->
+                    <div class="grid-header header-feature">
+                        <p>مجال المقارنة</p>
+                    </div>
+                    <div class="grid-header header-competitor">
+                        <div class="flex items-center justify-center gap-2">
+                            <i class="fas fa-mobile-alt text-gray-500"></i>
+                            <p>التطبيقات التقليدية</p>
+                        </div>
+                    </div>
+                    <div class="grid-header header-us">
+                        <div class="flex items-center justify-center gap-2">
+                            <i class="fas fa-rocket"></i>
+                            <p>منصتنا (The Solution)</p>
+                        </div>
+                    </div>
+                    <!-- Row 1: Subscriptions -->
+                    <div class="grid-row">
+                        <div class="cell cell-feature">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <p>إدارة الاشتراكات</p>
+                        </div>
+                        <div class="cell cell-competitor">
+                            <i class="fas fa-times-circle status-icon text-gray-600"></i>
+                            <p>عمولة ثابتة فقط، لا تحكم في العدد</p>
+                        </div>
+                        <div class="cell cell-us">
+                            <i class="fas fa-check-circle status-icon check-icon"></i>
+                            <p>باقات مرنة + تحكم (Enforcement) في الطلبات</p>
+                        </div>
+                    </div>
+                    <!-- Row 2: Driver Dispatch -->
+                    <div class="grid-row">
+                        <div class="cell cell-feature">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-motorcycle"></i>
+                            </div>
+                            <p>توزيع السائقين</p>
+                        </div>
+                        <div class="cell cell-competitor">
+                            <i class="fas fa-exclamation-triangle status-icon warning-icon"></i>
+                            <p>منافسة مفتوحة (الأسرع يربح) أو يدوي</p>
+                        </div>
+                        <div class="cell cell-us">
+                            <i class="fas fa-check-circle status-icon check-icon"></i>
+                            <p>توزيع متسلسل (Sequential) عادل + إعادة توزيع</p>
+                        </div>
+                    </div>
+                    <!-- Row 3: Financial Risk -->
+                    <div class="grid-row">
+                        <div class="cell cell-feature">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <p>المخاطر المالية</p>
+                        </div>
+                        <div class="cell cell-competitor">
+                            <i class="fas fa-times-circle status-icon cross-icon"></i>
+                            <p>استرداد نقدي فوري، بوابات دفع معقدة</p>
+                        </div>
+                        <div class="cell cell-us">
+                            <i class="fas fa-check-circle status-icon check-icon"></i>
+                            <p>Wallet Refund Only، تسوية أسبوعية آمنة</p>
+                        </div>
+                    </div>
+                    <!-- Row 4: Architecture -->
+                    <div class="grid-row">
+                        <div class="cell cell-feature">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <p>الهيكلية التقنية</p>
+                        </div>
+                        <div class="cell cell-competitor">
+                            <i class="fas fa-times-circle status-icon text-gray-600"></i>
+                            <p>Monolith جامد أو Microservices مفرطة التعقيد</p>
+                        </div>
+                        <div class="cell cell-us">
+                            <i class="fas fa-check-circle status-icon check-icon"></i>
+                            <p>Modular Monolith قابل للتوسع (Scalable)</p>
+                        </div>
+                    </div>
+                    <!-- Row 5: Geo-Expansion -->
+                    <div class="grid-row">
+                        <div class="cell cell-feature" style="border-bottom: none;">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-globe-americas"></i>
+                            </div>
+                            <p>التوسع الجغرافي</p>
+                        </div>
+                        <div class="cell cell-competitor" style="border-bottom: none;">
+                            <i class="fas fa-exclamation-triangle status-icon warning-icon"></i>
+                            <p>مصمم لمدينة/عملة واحدة، صعب التكرار</p>
+                        </div>
+                        <div class="cell cell-us" style="border-bottom: none;">
+                            <i class="fas fa-check-double status-icon check-icon"></i>
+                            <p>لبيلى &amp; Multi-Currency منذ اليوم الأول</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-12 py-4 border-t border-gray-700 flex justify-between items-center text-xs text-gray-500">
+            <p>Comparison Analysis</p>
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                <p>Our Solution</p>
+                <div class="w-2 h-2 rounded-full bg-gray-600 ml-2"></div>
+                <p>Competitors</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
